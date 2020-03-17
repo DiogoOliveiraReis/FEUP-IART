@@ -119,6 +119,17 @@ public class Parquet {
         return move;
     }
 
+    private static Move getVoidMove(Scanner scanner, State state) {
+        System.out.println("Choose Void piece to move");
+        System.out.println("Input <PosX PosY Direction>");
+        String input = scanner.nextLine();
+        String[] str = input.split(" ");
+        int x = Integer.parseInt(str[0]);
+        int y = Integer.parseInt(str[1]);
+        Move move = new Move(x, y, str[2]);
+        return move;
+    }
+
     private static Move getPCRandomMove(State state) {
         String direction = "MoveLeft";
         Random rand = new Random();
@@ -145,6 +156,91 @@ public class Parquet {
         return move;
     }
 
+    private static boolean validVoidPosition(State state, Move move) {
+        if (state.board[move.x + 1][move.y] == 1 
+        || state.board[move.x + 1][move.y + 1] == 1 
+        || state.board[move.x][move.y + 1] == 1 
+        || state.board[move.x - 1][move.y] == 1 
+        || state.board[move.x - 1][move.y - 1] == 1
+        || state.board[move.x][move.y - 1] == 1
+        || state.board[move.x + 1][move.y - 1] == 1
+        || state.board[move.x - 1][move.y + 1] == 1)
+            return true;
+
+        return false;
+    }
+
+    private static boolean validVoidMove(State state, Move move) {
+
+        // Verifies if a void piece was selected 
+        if (state.board[move.x][move.y] == 1 && (move.x < 6 && move.x >= 0 || move.y < 6 && move.y >= 0)) {
+
+            if (move.direction.equals("Up")) {
+                if (state.board[move.x - 1][move.y] == 0) {
+                    move.x -= 1;                                // Move piece temporarily to the desired position and
+                    if (validVoidPosition(state, move)) {       // verifies if it stays adjacent to other void piece
+                        move.x += 1; 
+                        return true;
+                    }
+
+                }
+            }
+            if (move.direction.equals("Down")) {
+                if (state.board[move.x + 1][move.y] == 0) {
+                    move.x += 1;
+                    if (validVoidPosition(state, move)) {
+                        move.x -= 1;
+                        return true;
+                    }
+                }
+            }
+            if (move.direction.equals("Right")) {
+                if (state.board[move.x][move.y + 1] == 0) {
+                    move.y += 1;
+                    if (validVoidPosition(state, move)) {
+                        move.y -= 1;
+                        return true;
+                    }
+                }
+            }
+            if (move.direction.equals("Left")) {
+                if (state.board[move.x][move.y - 1] == 0) {
+                    move.y -= 1;
+                    if (validVoidPosition(state, move)) {
+                        move.y += 1;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static void moveVoid(State state, Move move) {
+        switch (move.direction) {
+            case "Up":
+            state.board[move.x][move.y] = 0;
+            state.board[move.x - 1][move.y] = 1;
+            break;
+
+            case "Down":
+            state.board[move.x][move.y] = 0;
+            state.board[move.x + 1][move.y] = 1;
+            break;
+
+            case "Left":
+            state.board[move.x][move.y] = 0;
+            state.board[move.x][move.y - 1] = 1;
+            break;
+
+            case "Right":
+            state.board[move.x][move.y] = 0;
+            state.board[move.x][move.y + 1] = 1;
+            break;
+        }
+    }
+
     public static void main(String args[]) {
         Scanner scanner = new Scanner(System.in);
         State state = new State(2);
@@ -153,6 +249,16 @@ public class Parquet {
             Move move = getUserMove(scanner, state);
             if (validMove(state, move)) {
                 makeMove(state, move);
+                
+                printBoard(state.board);
+            
+                // Void piece move
+                Move voidMove = getVoidMove(scanner, state);
+                if(validVoidMove(state, voidMove)) {
+                    System.out.println("valid void move");
+                    moveVoid(state, voidMove);
+                }
+
                 printBoard(state.board);
             } else {
                 System.out.print("Invalid Move\n");
