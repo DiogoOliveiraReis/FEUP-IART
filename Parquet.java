@@ -5,8 +5,9 @@ public class Parquet {
     private static void printBoard(int[][] board) {
         for (int i = 0; i < board.length; i++) {
             System.out.println();
+            System.out.println();
             for (int j = 0; j < board.length; j++) {
-                System.out.print(board[i][j] + " ");
+                System.out.print(board[i][j] + "   ");
             }
         }
         System.out.println();
@@ -33,7 +34,32 @@ public class Parquet {
                 if (state.board[move.x + 1][move.y] == 0)
                     return true;
             }
+        } else if (move.direction.equals("MoveUpRight") && move.x < 6 && move.x >= 0 && move.y < 6 && move.y >= 0) {
+            if (state.board[move.x][move.y] == state.player) {
+                if (state.board[move.x - 1][move.y + 1] == 0)
+                    return true;
+            }
+        } else if (move.direction.equals("MoveDownLeft") && move.x < 6 && move.x >= 0 && move.y < 6 && move.y >= 0) {
+            if (state.board[move.x][move.y] == state.player) {
+                if (state.board[move.x + 1][move.y - 1] == 0)
+                    return true;
+            }
+        } else if (move.direction.equals("MoveUpRight2") && move.x < 6 && move.x >= 0 && move.y < 6 && move.y >= 0) {
+            if (state.board[move.x][move.y] == state.player) {
+                if (state.board[move.x - 1][move.y + 1] != 0 && state.board[move.x - 1][move.y + 1] != 1) {
+                    if (state.board[move.x - 2][move.y + 2] == 0)    
+                        return true;
+                }
+            }
+        } else if (move.direction.equals("MoveDownLeft2") && move.x < 6 && move.x >= 0 && move.y < 6 && move.y >= 0) {
+            if (state.board[move.x][move.y] == state.player) {
+                if (state.board[move.x + 1][move.y - 1] != 0 && state.board[move.x + 1][move.y - 1] != 1) {
+                    if (state.board[move.x + 2][move.y - 2] == 0)    
+                        return true;
+                }
+            }
         }
+
         return false;
     }
 
@@ -47,6 +73,15 @@ public class Parquet {
                 state.board[move.x][move.y] = 0;
                 state.board[move.x - 1][move.y] = state.player;
             }
+            if (move.direction.equals("MoveUpRight")) {
+                state.board[move.x][move.y] = 0;
+                state.board[move.x - 1][move.y + 1] = state.player;
+            }
+            if (move.direction.equals("MoveUpRight2")) {
+                state.board[move.x][move.y] = 0;
+                state.board[move.x - 2][move.y + 2] = state.player;
+            }
+
             state.player++;
         }
         return state;
@@ -62,6 +97,15 @@ public class Parquet {
                 state.board[move.x][move.y] = 0;
                 state.board[move.x + 1][move.y] = state.player;
             }
+            if (move.direction.equals("MoveDownLeft")) {
+                state.board[move.x][move.y] = 0;
+                state.board[move.x + 1][move.y - 1] = state.player;
+            }
+            if (move.direction.equals("MoveDownLeft2")) {
+                state.board[move.x][move.y] = 0;
+                state.board[move.x + 2][move.y - 2] = state.player;
+            }
+
             state.player--;
         }
         return state;
@@ -80,11 +124,16 @@ public class Parquet {
     private static Move getPCRandomMove(State state) {
         String direction = "MoveLeft";
         Random rand = new Random();
-        int randomNumber = rand.nextInt(2);
-        if (randomNumber == 0) {
+        int randomNumber = rand.nextInt(4);
+        if (randomNumber == 0)
             direction = "MoveLeft";
-        } else
+        else if(randomNumber == 1)
             direction = "MoveDown";
+        else if(randomNumber == 2)
+            direction = "MoveDownLeft";
+        else if(randomNumber == 3)
+            direction = "MoveDownLeft2";
+
         int randomNumber1 = rand.nextInt(6);
         int randomNumber2 = rand.nextInt(6);
         Move move = new Move(randomNumber1, randomNumber2, direction);
@@ -101,6 +150,8 @@ public class Parquet {
     public static void main(String args[]) {
         Scanner scanner = new Scanner(System.in);
         State state = new State(2);
+        printBoard(state.board);
+
         while (!state.gameover) {
             Move move = getUserMove(scanner, state);
             if (validMove(state, move)) {
@@ -113,6 +164,7 @@ public class Parquet {
             printBoard(state.board);
             state.checkGameOver();
         }
+
         scanner.close();
         System.out.print("GameOver\n");
     }
