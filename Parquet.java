@@ -33,11 +33,22 @@ public class Parquet {
                 if (state.board[move.x + 1][move.y] == 0)
                     return true;
             }
+        } else if (move.direction.equals("MoveDiagonaly") && move.x < 6 && move.x >= 0) {
+            if (state.board[move.x][move.y] == state.player) {
+                if (state.player == 2){
+                    if (state.board[move.x - 1][move.y + 1] == 0)
+                        return true;
+                }
+                else if (state.player == 3) {
+                    if (state.board[move.x + 1][move.y - 1] == 0)
+                        return true;
+                }
+            }
         }
         return false;
     }
 
-    private static State makeMove(State state, Move move) {
+    private static void makeMove(State state, Move move) {
         if (state.player == 2) {
             if (move.direction.equals("MoveRight")) {
                 state.board[move.x][move.y] = 0;
@@ -47,12 +58,15 @@ public class Parquet {
                 state.board[move.x][move.y] = 0;
                 state.board[move.x - 1][move.y] = state.player;
             }
+            if (move.direction.equals("MoveDiagonaly")) {
+                state.board[move.x][move.y] = 0;
+                state.board[move.x - 1][move.y + 1] = state.player;
+            }
             state.player++;
         }
-        return state;
     }
 
-    private static State makeEnemyMove(State state, Move move) {
+    private static void makeEnemyMove(State state, Move move) {
         if (state.player == 3) {
             if (move.direction.equals("MoveLeft")) {
                 state.board[move.x][move.y] = 0;
@@ -62,9 +76,12 @@ public class Parquet {
                 state.board[move.x][move.y] = 0;
                 state.board[move.x + 1][move.y] = state.player;
             }
+            if (move.direction.equals("MoveDiagonaly")) {
+                state.board[move.x][move.y] = 0;
+                state.board[move.x + 1][move.y - 1] = state.player;
+            }
             state.player--;
         }
-        return state;
     }
 
     private static Move getUserMove(Scanner scanner, State state) {
@@ -101,15 +118,16 @@ public class Parquet {
     public static void main(String args[]) {
         Scanner scanner = new Scanner(System.in);
         State state = new State(2);
+        printBoard(state.board);
         while (!state.gameover) {
             Move move = getUserMove(scanner, state);
             if (validMove(state, move)) {
-                state = makeMove(state, move);
+                makeMove(state, move);
                 printBoard(state.board);
             } else {
                 System.out.print("Invalid Move\n");
             }
-            state = makeEnemyMove(state, getPCRandomMove(state));
+            makeEnemyMove(state, getPCRandomMove(state));
             printBoard(state.board);
             state.checkGameOver();
         }
