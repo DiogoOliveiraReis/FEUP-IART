@@ -14,44 +14,44 @@ public class Parquet {
     }
 
     private static boolean validMove(State state, Move move) {
-        if (move.direction.equals("MoveRight") && move.y < 6 && move.y >= 0) {
+        if (move.direction.equals("MoveRight") && move.y < 5 && move.y >= 0) {
             if (state.board[move.x][move.y] == state.player) {
                 if (state.board[move.x][move.y + 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveLeft") && move.y < 6 && move.y >= 0) {
+        } else if (move.direction.equals("MoveLeft") && move.y < 6 && move.y >= 1) {
             if (state.board[move.x][move.y] == state.player) {
                 if (state.board[move.x][move.y - 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveUp") && move.x < 6 && move.x >= 0) {
+        } else if (move.direction.equals("MoveUp") && move.x < 6 && move.x >= 1) {
             if (state.board[move.x][move.y] == state.player) {
                 if (state.board[move.x - 1][move.y] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveDown") && move.x < 6 && move.x >= 0) {
+        } else if (move.direction.equals("MoveDown") && move.x < 5 && move.x >= 0) {
             if (state.board[move.x][move.y] == state.player) {
                 if (state.board[move.x + 1][move.y] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveUpRight") && move.x < 6 && move.x >= 0 && move.y < 6 && move.y >= 0) {
+        } else if (move.direction.equals("MoveUpRight") && move.x < 6 && move.x >= 1 && move.y < 5 && move.y >= 0) {
             if (state.board[move.x][move.y] == state.player) {
                 if (state.board[move.x - 1][move.y + 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveDownLeft") && move.x < 6 && move.x >= 0 && move.y < 6 && move.y >= 0) {
+        } else if (move.direction.equals("MoveDownLeft") && move.x < 5 && move.x >= 0 && move.y < 6 && move.y >= 1) {
             if (state.board[move.x][move.y] == state.player) {
                 if (state.board[move.x + 1][move.y - 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveUpRight2") && move.x < 6 && move.x >= 0 && move.y < 6 && move.y >= 0) {
+        } else if (move.direction.equals("MoveUpRight2") && move.x < 6 && move.x >= 2 && move.y < 4 && move.y >= 0) {
             if (state.board[move.x][move.y] == state.player) {
                 if (state.board[move.x - 1][move.y + 1] != 0 && state.board[move.x - 1][move.y + 1] != 1) {
                     if (state.board[move.x - 2][move.y + 2] == 0)    
                         return true;
                 }
             }
-        } else if (move.direction.equals("MoveDownLeft2") && move.x < 6 && move.x >= 0 && move.y < 6 && move.y >= 0) {
+        } else if (move.direction.equals("MoveDownLeft2") && move.x < 4 && move.x >= 0 && move.y < 6 && move.y >= 2) {
             if (state.board[move.x][move.y] == state.player) {
                 if (state.board[move.x + 1][move.y - 1] != 0 && state.board[move.x + 1][move.y - 1] != 1) {
                     if (state.board[move.x + 2][move.y - 2] == 0)    
@@ -241,6 +241,73 @@ public class Parquet {
         }
     }
 
+    private static void bestMove(State state) {
+
+        int bestScore = -9999999;
+        Move move, bestMove = new Move(0, 0, "");
+
+        for (int i = 0; i < 6; i++) {
+            for(int j = 0; j < 6; j++) {
+                if(state.board[i][j] == 3) {
+                    for(int k = 0; k < 4; k++) {
+                        int score = 0;
+                        if(k == 0) {
+                            move = new Move(i, j, "MoveDown");
+                            if(validMove(state, move)) {
+                                state.board[i][j] = 0;
+                                state.board[i+1][j] = 3;
+                                score = minimax();
+                                state.board[i][j] = 3;
+                                state.board[i+1][j] = 0;
+                            }
+                        }
+                        else if(k == 1) {
+                            move = new Move(i, j, "MoveLeft");
+                            if(validMove(state, move)) {
+                                state.board[i][j] = 0;
+                                state.board[i][j-1] = 3;
+                                score = minimax();
+                                state.board[i][j] = 3;
+                                state.board[i][j-1] = 0;
+                            }
+                        }
+                        else if(k == 2) {
+                            move = new Move(i, j, "MoveDownLeft");
+                            if(validMove(state, move)) {
+                                state.board[i][j] = 0;
+                                state.board[i+1][j-1] = 3;
+                                score = minimax();
+                                state.board[i][j] = 3;
+                                state.board[i+1][j-1] = 0;
+                            }
+                        }
+                        else {
+                            move = new Move(i, j, "MoveDownLeft2");
+                            if(validMove(state, move)) {
+                                state.board[i][j] = 0;
+                                state.board[i+2][j-2] = 3;
+                                score = minimax();
+                                state.board[i][j] = 3;
+                                state.board[i+2][j-2] = 0;
+                            }
+                        }
+
+                        if(score > bestScore) {
+                            bestScore = score;
+                            bestMove = move;
+                        }
+                    }
+                }
+            }
+        }
+        makeEnemyMove(state, bestMove);
+        state.player--;
+    }
+
+    private static int minimax() {
+        return 1;
+    }
+
     public static void main(String args[]) {
         Scanner scanner = new Scanner(System.in);
         State state = new State(2);
@@ -254,6 +321,7 @@ public class Parquet {
             
                 // Void piece move
                 Move voidMove = getVoidMove(scanner, state);
+
                 if(validVoidMove(state, voidMove)) {
                     System.out.println("valid void move");
                     moveVoid(state, voidMove);
@@ -263,8 +331,10 @@ public class Parquet {
             } else {
                 System.out.print("Invalid Move\n");
             }
-            makeEnemyMove(state, getPCRandomMove(state));
+            //makeEnemyMove(state, getPCRandomMove(state));
+            bestMove(state);
             printBoard(state.board);
+            System.out.println("Bot played");
             state.checkGameOver();
         }
 
