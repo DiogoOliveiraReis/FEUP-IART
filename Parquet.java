@@ -302,8 +302,9 @@ public class Parquet {
                             move.direction = "MoveUp";
                         } else if (d == 2) {
                             move.direction = "MoveUpRight";
-                        } else
+                        } else if (d == 3) {
                             move.direction = "MoveUpRightJump";
+                        }
                         if (validMove(state, move)) {
                             makeMove(state, move);
                             state.score = minimax(state, depth + 1, true);
@@ -321,9 +322,7 @@ public class Parquet {
 
     public static void main(String args[]) {
         Scanner scanner = new Scanner(System.in);
-        Move startingMove = new Move(5, 0, "MoveRight");
-        State state = new State("Board", 2);
-        makeMove(state, startingMove);
+        State state = new State("Board", 3);
         makeEnemyMove(state, getPCBestMove(state));
         while (!state.checkGameOver()) {
             printBoard(state.board);
