@@ -1,12 +1,19 @@
 public class State {
 
-    public int[][] board = {
-        { 0, 0, 0, 0, 0, 3 },
-        { 0, 1, 0, 0, 0, 0 },
+    public int[][] board6x6 = {
+        { 0, 0, 0, 0, 0, 0 },
+        { 0, 1, 0, 0, 3, 0 },
         { 0, 0, 1, 0, 0, 0 },
         { 0, 0, 0, 1, 0, 0 },
-        { 0, 0, 0, 0, 1, 0 },
-        { 2, 0, 0, 0, 0, 0 } };
+        { 0, 2, 0, 0, 1, 0 },
+        { 0, 0, 0, 0, 0, 0 } };
+
+    public int[][] board4x4 = {
+        { 0, 0, 3, 0},
+        { 0, 1, 3, 3},
+        { 2, 2, 1, 0},
+        { 0, 2, 0, 0}
+    };
 
     public int player;
     public String name;
@@ -19,13 +26,13 @@ public class State {
         player = p;
     }
 
-    public boolean checkGameOver() {
-        if (board[5][0] == 3 || board[5][1] == 3 || board[4][0] == 3) {
+    public boolean checkGameOver(int[][] board) {
+        if (board[board.length-1][0] == 3) {
             score = 1;
             gameover = true;
             return true;
         }
-        if (board[0][5] == 2 || board[1][5] == 2 || board[0][4] == 2) {
+        if (board[0][board.length-1] == 2) {
             score = -1;
             gameover = true;
             return true;

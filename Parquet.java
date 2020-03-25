@@ -12,62 +12,62 @@ public class Parquet {
         System.out.println();
     }
 
-    private static boolean validMove(State state, Move move) {
-        if (move.direction.equals("MoveRight") && move.y < 5) {
-            if (state.board[move.x][move.y] == state.player) {
-                if (state.board[move.x][move.y + 1] == 0) {
+    private static boolean validMove(State state, int[][] board, Move move) {
+        if (move.direction.equals("MoveRight") && move.y < board.length-1) {
+            if (board[move.x][move.y] == state.player) {
+                if (board[move.x][move.y + 1] == 0) {
                     return true;
                 }
             }
         }
         if (move.direction.equals("MoveLeft") && move.y > 0) {
-            if (state.board[move.x][move.y] == state.player) {
-                if (state.board[move.x][move.y - 1] == 0) {
+            if (board[move.x][move.y] == state.player) {
+                if (board[move.x][move.y - 1] == 0) {
                     return true;
                 }
             }
         }
         if (move.direction.equals("MoveUp") && move.x > 0) {
-            if (state.board[move.x][move.y] == state.player) {
-                if (state.board[move.x - 1][move.y] == 0) {
+            if (board[move.x][move.y] == state.player) {
+                if (board[move.x - 1][move.y] == 0) {
                     return true;
                 }
             }
         }
-        if (move.direction.equals("MoveDown") && move.x < 5) {
-            if (state.board[move.x][move.y] == state.player) {
-                if (state.board[move.x + 1][move.y] == 0) {
+        if (move.direction.equals("MoveDown") && move.x < board.length-1) {
+            if (board[move.x][move.y] == state.player) {
+                if (board[move.x + 1][move.y] == 0) {
                     return true;
                 }
             }
         }
-        if (move.direction.equals("MoveUpRight") && move.x > 0 && move.y < 5) {
-            if (state.board[move.x][move.y] == state.player) {
-                if (state.board[move.x - 1][move.y + 1] == 0) {
+        if (move.direction.equals("MoveUpRight") && move.x > 0 && move.y < board.length-1) {
+            if (board[move.x][move.y] == state.player) {
+                if (board[move.x - 1][move.y + 1] == 0) {
                     return true;
                 }
             }
         }
-        if (move.direction.equals("MoveDownLeft") && move.y > 0 && move.x < 5) {
-            if (state.board[move.x][move.y] == state.player) {
-                if (state.board[move.x + 1][move.y - 1] == 0) {
+        if (move.direction.equals("MoveDownLeft") && move.y > 0 && move.x < board.length-1) {
+            if (board[move.x][move.y] == state.player) {
+                if (board[move.x + 1][move.y - 1] == 0) {
                     return true;
                 }
             }
         }
-        if (move.direction.equals("MoveUpRightJump") && move.x > 1 && move.y < 4) {
-            if (state.board[move.x][move.y] == state.player) {
-                if (state.board[move.x - 1][move.y + 1] != 0 && state.board[move.x - 1][move.y + 1] != 1) {
-                    if (state.board[move.x - 2][move.y + 2] == 0) {
+        if (move.direction.equals("MoveUpRightJump") && move.x > 1 && move.y < board.length-2) {
+            if (board[move.x][move.y] == state.player) {
+                if (board[move.x - 1][move.y + 1] != 0 && board[move.x - 1][move.y + 1] != 1) {
+                    if (board[move.x - 2][move.y + 2] == 0) {
                         return true;
                     }
                 }
             }
         }
-        if (move.direction.equals("MoveDownLeftJump") && move.y > 1 && move.x < 4) {
-            if (state.board[move.x][move.y] == state.player) {
-                if (state.board[move.x + 1][move.y - 1] != 0 && state.board[move.x + 1][move.y - 1] != 1) {
-                    if (state.board[move.x + 2][move.y - 2] == 0) {
+        if (move.direction.equals("MoveDownLeftJump") && move.y > 1 && move.x < board.length-2) {
+            if (board[move.x][move.y] == state.player) {
+                if (board[move.x + 1][move.y - 1] != 0 && board[move.x + 1][move.y - 1] != 1) {
+                    if (board[move.x + 2][move.y - 2] == 0) {
                         return true;
                     }
                 }
@@ -76,90 +76,90 @@ public class Parquet {
         return false;
     }
 
-    private static void makeMove(State state, Move move) {
+    private static void makeMove(State state, int[][] board, Move move) {
         if (state.player == 2) {
             if (move.direction.equals("MoveRight")) {
-                state.board[move.x][move.y] = 0;
-                state.board[move.x][move.y + 1] = state.player;
+                board[move.x][move.y] = 0;
+                board[move.x][move.y + 1] = state.player;
             }
             if (move.direction.equals("MoveUp")) {
-                state.board[move.x][move.y] = 0;
-                state.board[move.x - 1][move.y] = state.player;
+                board[move.x][move.y] = 0;
+                board[move.x - 1][move.y] = state.player;
             }
             if (move.direction.equals("MoveUpRight")) {
-                state.board[move.x][move.y] = 0;
-                state.board[move.x - 1][move.y + 1] = state.player;
+                board[move.x][move.y] = 0;
+                board[move.x - 1][move.y + 1] = state.player;
             }
             if (move.direction.equals("MoveUpRightJump")) {
-                state.board[move.x][move.y] = 0;
-                state.board[move.x - 2][move.y + 2] = state.player;
+                board[move.x][move.y] = 0;
+                board[move.x - 2][move.y + 2] = state.player;
             }
             state.player++;
         }
     }
 
-    private static void revertMakeMove(State state, Move move) {
+    private static void revertMakeMove(State state, int[][] board, Move move) {
         state.player--;
         if (state.player == 2) {
             if (move.direction.equals("MoveRight")) {
-                state.board[move.x][move.y + 1] = 0;
-                state.board[move.x][move.y] = state.player;
+                board[move.x][move.y + 1] = 0;
+                board[move.x][move.y] = state.player;
             }
             if (move.direction.equals("MoveUp")) {
-                state.board[move.x - 1][move.y] = 0;
-                state.board[move.x][move.y] = state.player;
+                board[move.x - 1][move.y] = 0;
+                board[move.x][move.y] = state.player;
             }
             if (move.direction.equals("MoveUpRight")) {
-                state.board[move.x - 1][move.y + 1] = 0;
-                state.board[move.x][move.y] = state.player;
+                board[move.x - 1][move.y + 1] = 0;
+                board[move.x][move.y] = state.player;
             }
             if (move.direction.equals("MoveUpRightJump")) {
-                state.board[move.x - 2][move.y + 2] = 0;
-                state.board[move.x][move.y] = state.player;
+                board[move.x - 2][move.y + 2] = 0;
+                board[move.x][move.y] = state.player;
             }
         }
     }
 
-    private static void makeEnemyMove(State state, Move move) {
+    private static void makeEnemyMove(State state, int[][] board, Move move) {
         if (state.player == 3) {
             if (move.direction.equals("MoveLeft")) {
-                state.board[move.x][move.y] = 0;
-                state.board[move.x][move.y - 1] = state.player;
+                board[move.x][move.y] = 0;
+                board[move.x][move.y - 1] = state.player;
             }
             if (move.direction.equals("MoveDown")) {
-                state.board[move.x][move.y] = 0;
-                state.board[move.x + 1][move.y] = state.player;
+                board[move.x][move.y] = 0;
+                board[move.x + 1][move.y] = state.player;
             }
             if (move.direction.equals("MoveDownLeft")) {
-                state.board[move.x][move.y] = 0;
-                state.board[move.x + 1][move.y - 1] = state.player;
+                board[move.x][move.y] = 0;
+                board[move.x + 1][move.y - 1] = state.player;
             }
             if (move.direction.equals("MoveDownLeftJump")) {
-                state.board[move.x][move.y] = 0;
-                state.board[move.x + 2][move.y - 2] = state.player;
+                board[move.x][move.y] = 0;
+                board[move.x + 2][move.y - 2] = state.player;
             }
             state.player--;
         }
     }
 
-    private static void revertEnemyMove(State state, Move move) {
+    private static void revertEnemyMove(State state, int[][] board, Move move) {
         state.player++;
         if (state.player == 3) {
             if (move.direction.equals("MoveLeft")) {
-                state.board[move.x][move.y - 1] = 0;
-                state.board[move.x][move.y] = state.player;
+                board[move.x][move.y - 1] = 0;
+                board[move.x][move.y] = state.player;
             }
             if (move.direction.equals("MoveDown")) {
-                state.board[move.x + 1][move.y] = 0;
-                state.board[move.x][move.y] = state.player;
+                board[move.x + 1][move.y] = 0;
+                board[move.x][move.y] = state.player;
             }
             if (move.direction.equals("MoveDownLeft")) {
-                state.board[move.x + 1][move.y - 1] = 0;
-                state.board[move.x][move.y] = state.player;
+                board[move.x + 1][move.y - 1] = 0;
+                board[move.x][move.y] = state.player;
             }
             if (move.direction.equals("MoveDownLeftJump")) {
-                state.board[move.x + 2][move.y - 2] = 0;
-                state.board[move.x][move.y] = state.player;
+                board[move.x + 2][move.y - 2] = 0;
+                board[move.x][move.y] = state.player;
             }
         }
     }
@@ -174,7 +174,7 @@ public class Parquet {
         return move;
     }
 
-    private static Move getPCRandomMove(State state) {
+    private static Move getPCRandomMove(State state, int[][] board) {
         String direction = "MoveLeft";
         Random rand = new Random();
         int randomNumber = rand.nextInt(4);
@@ -186,12 +186,12 @@ public class Parquet {
             direction = "MoveDownLeft";
         else if (randomNumber == 3)
             direction = "MoveDownLeftJump";
-        int randomNumber1 = rand.nextInt(6);
-        int randomNumber2 = rand.nextInt(6);
+        int randomNumber1 = rand.nextInt(board.length);
+        int randomNumber2 = rand.nextInt(board.length);
         Move move = new Move(randomNumber1, randomNumber2, direction);
-        while (state.board[randomNumber1][randomNumber2] != 3 || !validMove(state, move)) {
-            randomNumber1 = rand.nextInt(6);
-            randomNumber2 = rand.nextInt(6);
+        while (board[randomNumber1][randomNumber2] != 3 || !validMove(state, board, move)) {
+            randomNumber1 = rand.nextInt(board.length);
+            randomNumber2 = rand.nextInt(board.length);
             move.x = randomNumber1;
             move.y = randomNumber2;
         }
@@ -199,63 +199,63 @@ public class Parquet {
         return move;
     }
 
-    private static boolean validVoidMove(State state, Move move) {
-        if (move.direction.equals("MoveRight") && move.y < 6 && move.y >= 0) {
-            if (state.board[move.x][move.y] == 1) {
-                if (state.board[move.x][move.y + 1] == 0)
+    private static boolean validVoidMove(State state, int[][] board, Move move) {
+        if (move.direction.equals("MoveRight") && move.y < board.length && move.y >= 0) {
+            if (board[move.x][move.y] == 1) {
+                if (board[move.x][move.y + 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveLeft") && move.y < 6 && move.y >= 0) {
-            if (state.board[move.x][move.y] == 1) {
-                if (state.board[move.x][move.y - 1] == 0)
+        } else if (move.direction.equals("MoveLeft") && move.y < board.length && move.y >= 0) {
+            if (board[move.x][move.y] == 1) {
+                if (board[move.x][move.y - 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveUp") && move.x < 6 && move.x >= 0) {
-            if (state.board[move.x][move.y] == 1) {
-                if (state.board[move.x - 1][move.y] == 0)
+        } else if (move.direction.equals("MoveUp") && move.x < board.length && move.x >= 0) {
+            if (board[move.x][move.y] == 1) {
+                if (board[move.x - 1][move.y] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveDown") && move.x < 6 && move.x >= 0) {
-            if (state.board[move.x][move.y] == 1) {
-                if (state.board[move.x + 1][move.y] == 0)
+        } else if (move.direction.equals("MoveDown") && move.x < board.length && move.x >= 0) {
+            if (board[move.x][move.y] == 1) {
+                if (board[move.x + 1][move.y] == 0)
                     return true;
             }
         }
         return false;
     }
 
-    private static void makeVoidMove(State state, Move move) {
+    private static void makeVoidMove(State state, int[][] board, Move move) {
         switch (move.direction) {
             case "MoveUp":
-                state.board[move.x][move.y] = 0;
-                state.board[move.x - 1][move.y] = 1;
+                board[move.x][move.y] = 0;
+                board[move.x - 1][move.y] = 1;
                 break;
             case "MoveDown":
-                state.board[move.x][move.y] = 0;
-                state.board[move.x + 1][move.y] = 1;
+                board[move.x][move.y] = 0;
+                board[move.x + 1][move.y] = 1;
                 break;
             case "MoveLeft":
-                state.board[move.x][move.y] = 0;
-                state.board[move.x][move.y - 1] = 1;
+                board[move.x][move.y] = 0;
+                board[move.x][move.y - 1] = 1;
                 break;
             case "MoveRight":
-                state.board[move.x][move.y] = 0;
-                state.board[move.x][move.y + 1] = 1;
+                board[move.x][move.y] = 0;
+                board[move.x][move.y + 1] = 1;
                 break;
         }
     }
 
-    private static Move getPCBestMove(State state) {
+    private static Move getPCBestMove(State state, int[][] board) {
         Move bestMove = new Move(0, 0, 0);
         int bestScore = -99999999;
-        for (int x = 0; x < 6; x++) {
-            for (int y = 0; y < 6; y++) {
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board.length; y++) {
                 for (int d = 0; d < 4; d++) {
                     Move move = new Move(x, y, d);
-                    if (validMove(state, move)) {
-                        makeEnemyMove(state, move);
-                        state.score = minimax(state, 0, false);
-                        revertEnemyMove(state, move);
+                    if (validMove(state, board, move)) {
+                        makeEnemyMove(state, board, move);
+                        state.score = minimax(state, board, 0, false);
+                        revertEnemyMove(state, board, move);
                         if (state.score > bestScore) {
                             bestScore = state.score;
                             bestMove = move;
@@ -268,20 +268,20 @@ public class Parquet {
         return bestMove;
     }
 
-    private static int minimax(State state, int depth, boolean isMax) {
-        if (state.checkGameOver()) {
+    private static int minimax(State state, int[][] board, int depth, boolean isMax) {
+        if (state.checkGameOver(board)) {
             return state.score;
         }
         if (isMax) {
             int bestScore = -99999999;
-            for (int x = 0; x < 6; x++) {
-                for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < board.length; x++) {
+                for (int y = 0; y < board.length; y++) {
                     for (int d = 0; d < 4; d++) {
                         Move move = new Move(x, y, d);
-                        if (validMove(state, move)) {
-                            makeEnemyMove(state, move);
-                            state.score = minimax(state, depth + 1, false);
-                            revertEnemyMove(state, move);
+                        if (validMove(state, board, move)) {
+                            makeEnemyMove(state, board, move);
+                            state.score = minimax(state, board, depth + 1, false);
+                            revertEnemyMove(state, board, move);
                             if (state.score > bestScore) {
                                 bestScore = state.score;
                             }
@@ -292,8 +292,8 @@ public class Parquet {
             return bestScore;
         } else {
             int bestScore = 99999999;
-            for (int x = 0; x < 6; x++) {
-                for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < board.length; x++) {
+                for (int y = 0; y < board.length; y++) {
                     for (int d = 0; d < 4; d++) {
                         Move move = new Move(x, y, d);
                         if (d == 0) {
@@ -305,10 +305,10 @@ public class Parquet {
                         } else if (d == 3) {
                             move.direction = "MoveUpRightJump";
                         }
-                        if (validMove(state, move)) {
-                            makeMove(state, move);
-                            state.score = minimax(state, depth + 1, true);
-                            revertMakeMove(state, move);
+                        if (validMove(state, board, move)) {
+                            makeMove(state, board, move);
+                            state.score = minimax(state, board, depth + 1, true);
+                            revertMakeMove(state, board, move);
                             if (state.score < bestScore) {
                                 bestScore = state.score;
                             }
@@ -323,18 +323,33 @@ public class Parquet {
     public static void main(String args[]) {
         Scanner scanner = new Scanner(System.in);
         State state = new State("Board", 3);
-        makeEnemyMove(state, getPCBestMove(state));
-        while (!state.checkGameOver()) {
-            printBoard(state.board);
+        int size = 0;
+        int board[][] = {{}};
+
+        while(size != 1 && size != 2) {
+            System.out.println("Choose board to play:");
+            System.out.println("Board 4x4 - press 1");
+            System.out.println("Board 6x6 - press 2");
+            String input = scanner.nextLine();
+            size = Integer.parseInt(input);
+            if(size == 1)
+                board = state.board4x4;
+            else if(size == 2)
+                board = state.board6x6;
+        }
+        
+        makeEnemyMove(state, board, getPCBestMove(state, board));
+        while (!state.checkGameOver(board)) {
+            printBoard(board);
             Move move = getUserMove(scanner, state);
-            while (!(validMove(state, move))) {
-                printBoard(state.board);
+            while (!(validMove(state, board, move))) {
+                printBoard(board);
                 System.out.print("Invalid Move\n");
                 move = getUserMove(scanner, state);
             }
-            makeMove(state, move);
-            makeEnemyMove(state, getPCBestMove(state));
-            state.checkGameOver();
+            makeMove(state, board, move);
+            makeEnemyMove(state, board, getPCBestMove(state, board));
+            state.checkGameOver(board);
         }
         scanner.close();
         System.out.println("GameOver");
