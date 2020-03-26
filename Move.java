@@ -14,16 +14,16 @@ public class Move {
         y = posY;
         switch (d) {
             case 0:
-                direction = "MoveLeft";
+                direction = "MoveDownLeftJump";
                 break;
             case 1:
-                direction = "MoveDown";
-                break;
-            case 2:
                 direction = "MoveDownLeft";
                 break;
+            case 2:
+                direction = "MoveDown";
+                break;
             case 3:
-                direction = "MoveDownLeftJump";
+                direction = "MoveLeft";
                 break;
         }
     }
