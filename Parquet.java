@@ -95,6 +95,7 @@ public class Parquet {
                 board[move.x - 2][move.y + 2] = state.player;
             }
             state.player++;
+            state.updateScore(state, board);
         }
     }
 
@@ -117,6 +118,7 @@ public class Parquet {
                 board[move.x - 2][move.y + 2] = 0;
                 board[move.x][move.y] = state.player;
             }
+            state.updateScore(state, board);
         }
     }
 
@@ -139,6 +141,7 @@ public class Parquet {
                 board[move.x + 2][move.y - 2] = state.player;
             }
             state.player--;
+            state.updateScore(state, board);
         }
     }
 
@@ -161,6 +164,7 @@ public class Parquet {
                 board[move.x + 2][move.y - 2] = 0;
                 board[move.x][move.y] = state.player;
             }
+            state.updateScore(state, board);
         }
     }
 
@@ -261,41 +265,41 @@ public class Parquet {
                 board = state.board4x4;
             else if (size == 2)
                 board = state.board6x6;
-        }
 
-        int depthLimit = 6;
+            int depthLimit = 3;
 
-        long startTime = System.nanoTime();
-        makeEnemyMove(state, board, Minimax.getPCBestMove(state, board, depthLimit));
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-        System.out.println(
-                "getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000 + " Miliseconds");
-
-        while (!state.checkGameOver(board)) {
-            printBoard(board);
-            Move move = getUserMove(scanner, state);
-            while (!(validMove(state, board, move))) {
-                printBoard(board);
-                
-                System.out.print("Invalid Move\n");
-                move = getUserMove(scanner, state);
-            }
-            makeMove(state, board, move);
-            startTime = System.nanoTime();
+            long startTime = System.nanoTime();
             makeEnemyMove(state, board, Minimax.getPCBestMove(state, board, depthLimit));
-            endTime = System.nanoTime();
-            duration = (endTime - startTime);
+            long endTime = System.nanoTime();
+            long duration = (endTime - startTime);
             System.out.println(
                     "getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000 + " Miliseconds");
-            state.checkGameOver(board);
+
+            while (!state.checkGameOver(board)) {
+                printBoard(board);
+                Move move = getUserMove(scanner, state);
+                while (!(validMove(state, board, move))) {
+                    printBoard(board);
+
+                    System.out.print("Invalid Move\n");
+                    move = getUserMove(scanner, state);
+                }
+                makeMove(state, board, move);
+                startTime = System.nanoTime();
+                makeEnemyMove(state, board, Minimax.getPCBestMove(state, board, depthLimit));
+                endTime = System.nanoTime();
+                duration = (endTime - startTime);
+                System.out.println("getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000
+                        + " Miliseconds");
+                state.checkGameOver(board);
+            }
+            scanner.close();
+            System.out.println("GameOver");
+            String winner = "Human";
+            if (state.player == 2) {
+                winner = "PC";
+            }
+            System.out.println(winner + " Won!");
         }
-        scanner.close();
-        System.out.println("GameOver");
-        String winner = "Human";
-        if (state.player == 2) {
-            winner = "PC";
-        }
-        System.out.println(winner + " Won!");
     }
 }
