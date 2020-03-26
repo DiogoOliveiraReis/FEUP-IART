@@ -29,9 +29,30 @@ public class State {
     }
 
     public void updateScore(State state, int[][] board, Move move) {
-        if (state.player == 2)
+        /*if (state.player == 2)
             score--;
         else
-            score++;
+            score++;*/
+
+        double distBot = 0;
+        double distPlayer = 0;
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                if(board[i][j] == 3) {
+                    distBot += Math.sqrt(Math.pow(i - (board.length - 1), 2) + Math.pow(j, 2));
+                }
+            }
+        }
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                if(board[i][j] == 2) {
+                    distBot += Math.sqrt(Math.pow(i, 2) + Math.pow(j - (board.length - 1), 2));
+                }
+            }
+        }
+
+        score += distPlayer - distBot;
     }
 }

@@ -277,6 +277,7 @@ public class Parquet {
             Move move = getUserMove(scanner, state);
             while (!(validMove(state, board, move))) {
                 printBoard(board);
+                
                 System.out.print("Invalid Move\n");
                 move = getUserMove(scanner, state);
             }
