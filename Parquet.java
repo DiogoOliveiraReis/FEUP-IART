@@ -190,23 +190,24 @@ public class Parquet {
         return move;
     }
 
-    private static boolean validVoidMove(State state, int[][] board, Move move) {
-        if (move.direction.equals("MoveRight") && move.y < board.length && move.y >= 0) {
+    protected static boolean validVoidMove(State state, int[][] board, Move move) {
+
+        if (move.direction.equals("MoveRight") && move.y < board.length - 1 && move.y >= 0 && !(move.y == board.length - 2 && move.x == 0)) {
             if (board[move.x][move.y] == 1) {
                 if (board[move.x][move.y + 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveLeft") && move.y < board.length && move.y >= 0) {
+        } else if (move.direction.equals("MoveLeft") && move.y < board.length && move.y > 0 && !(move.y == 1 && move.x == board.length - 1)) {
             if (board[move.x][move.y] == 1) {
                 if (board[move.x][move.y - 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveUp") && move.x < board.length && move.x >= 0) {
+        } else if (move.direction.equals("MoveUp") && move.x < board.length && move.x > 0 && !(move.x == 1 && move.y == board.length - 1)) {
             if (board[move.x][move.y] == 1) {
                 if (board[move.x - 1][move.y] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveDown") && move.x < board.length && move.x >= 0) {
+        } else if (move.direction.equals("MoveDown") && move.x < board.length - 1 && move.x >= 0 && !(move.x == board.length - 2 && move.y == 0)) {
             if (board[move.x][move.y] == 1) {
                 if (board[move.x + 1][move.y] == 0)
                     return true;
@@ -215,7 +216,7 @@ public class Parquet {
         return false;
     }
 
-    private static void makeVoidMove(State state, int[][] board, Move move) {
+    protected static void makeVoidMove(State state, int[][] board, Move move) {
         switch (move.direction) {
             case "MoveUp":
                 board[move.x][move.y] = 0;
@@ -232,6 +233,27 @@ public class Parquet {
             case "MoveRight":
                 board[move.x][move.y] = 0;
                 board[move.x][move.y + 1] = 1;
+                break;
+        }
+    }
+
+    protected static void revertVoidMove(State state, int[][] board, Move move) {
+        switch (move.direction) {
+            case "MoveUp":
+                board[move.x - 1][move.y] = 0;
+                board[move.x][move.y] = 1;
+                break;
+            case "MoveDown":
+                board[move.x + 1][move.y] = 0;
+                board[move.x][move.y] = 1;
+                break;
+            case "MoveLeft":
+                board[move.x][move.y - 1] = 0;
+                board[move.x][move.y] = 1;
+                break;
+            case "MoveRight":
+                board[move.x][move.y + 1] = 0;
+                board[move.x][move.y] = 1;
                 break;
         }
     }
@@ -254,14 +276,17 @@ public class Parquet {
             else if (size == 2)
                 board = state.board6x6;
 
-            int depthLimit = 8;
+            int depthLimit = 3;
             boolean alphaBetaPruning = true;
 
             while (!state.checkGameOver(board)) {
 
                 System.out.println("main  " + state.player);
                 long startTime = System.nanoTime();
-                makeEnemyMove(state, board, Minimax.getPCBestMove(state, board, depthLimit, alphaBetaPruning));
+                Move[] bestEnemyMoves = Minimax.getPCBestMove(state, board, depthLimit, alphaBetaPruning);
+                makeEnemyMove(state, board, bestEnemyMoves[0]);
+                printBoard(board);
+                makeVoidMove(state, board, bestEnemyMoves[1]);
                 printBoard(board);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
@@ -286,6 +311,15 @@ public class Parquet {
                     System.out.println("HUMAN WON!!");
                     break;
                 }
+                
+                Move voidMove = getUserMove(scanner, state);
+                while (!(validVoidMove(state, board, voidMove))) {
+                    printBoard(board);
+
+                    System.out.print("Invalid Move\n");
+                    voidMove = getUserMove(scanner, state);
+                }
+                makeVoidMove(state, board, voidMove);
             }
             scanner.close();
             System.out.println("GameOver");
