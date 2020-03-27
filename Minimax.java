@@ -1,6 +1,7 @@
 public class Minimax extends Parquet {
 
     public static Move getPCBestMove(State state, int[][] board, int depthLimit) {
+        double score;
         int depth = 0;
         Move bestMove = new Move(0, 0, 0);
         double bestScore = -99999999;
@@ -10,13 +11,14 @@ public class Minimax extends Parquet {
                     Move move = new Move(x, y, d);
                     if (validMove(state, board, move, 3)) {
                         makeEnemyMove(state, board, move);
-                        double score = minimax(state, board, depth, depthLimit, false);
+                        score = state.updateScore(state, board);
+                        score = minimax(state, board, depth, depthLimit, false);
                         revertEnemyMove(state, board, move);
-                        
                         if (score > bestScore) {
                             bestScore = score;
                             bestMove = move;
                         }
+                        score = state.updateScore(state, board);
                     }
                 }
             }
@@ -27,15 +29,13 @@ public class Minimax extends Parquet {
     }
 
     public static double minimax(State state, int[][] board, int depth, int depthLimit, boolean isMax) {
-        
-        Move lol = new Move(0, 0, 0);
-        if (state.checkGameOver(board)) {
-            return state.updateScore(state, board);
-        }
+        double score;
         if (depthLimit == 0) {
             return state.updateScore(state, board);
         }
-        //score = 0;
+        if (state.checkGameOver(board)) {
+            return state.updateScore(state, board);
+        }
         if (isMax) {
             double bestScore = -99999999;
             for (int x = 0; x < board.length; x++) {
@@ -44,19 +44,19 @@ public class Minimax extends Parquet {
                         Move move = new Move(x, y, d);
                         if (validMove(state, board, move, 3)) {
                             makeEnemyMove(state, board, move);
-                            double score = minimax(state, board, depth + 1, depthLimit - 1, false);
+                            score = state.updateScore(state, board);
+                            score = minimax(state, board, depth + 1, depthLimit - 1, false);
                             revertEnemyMove(state, board, move);
                             if (score > bestScore) {
                                 bestScore = score;
-                                lol = move;
                             }
+                            score = state.updateScore(state, board);
                         }
                     }
                 }
             }
             return bestScore;
-        } 
-        else {
+        } else {
             double bestScore = 99999999;
             for (int x = 0; x < board.length; x++) {
                 for (int y = 0; y < board.length; y++) {
@@ -73,12 +73,13 @@ public class Minimax extends Parquet {
                         }
                         if (validMove(state, board, move, 2)) {
                             makeMove(state, board, move);
-                            double score = minimax(state, board, depth + 1, depthLimit - 1, true);
+                            score = state.updateScore(state, board);
+                            score = minimax(state, board, depth + 1, depthLimit - 1, true);
                             revertMakeMove(state, board, move);
                             if (score < bestScore) {
                                 bestScore = score;
-                                lol = move;
                             }
+                            score = state.updateScore(state, board);
                         }
                     }
                 }

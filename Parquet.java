@@ -1,5 +1,5 @@
-import java.util.Scanner;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Parquet {
     public static void printBoard(int[][] board) {
@@ -96,7 +96,7 @@ public class Parquet {
     }
 
     protected static void revertMakeMove(State state, int[][] board, Move move) {
-        
+
         if (move.direction.equals("MoveRight")) {
             board[move.x][move.y + 1] = 0;
             board[move.x][move.y] = 2;
@@ -116,7 +116,7 @@ public class Parquet {
     }
 
     protected static void makeEnemyMove(State state, int[][] board, Move move) {
-    
+
         if (move.direction.equals("MoveLeft")) {
             board[move.x][move.y] = 0;
             board[move.x][move.y - 1] = 3;
@@ -165,7 +165,7 @@ public class Parquet {
         return move;
     }
 
-    /*private static Move getPCRandomMove(State state, int[][] board) {
+    private static Move getPCRandomMove(State state, int[][] board) {
         String direction = "MoveLeft";
         Random rand = new Random();
         int randomNumber = rand.nextInt(4);
@@ -180,7 +180,7 @@ public class Parquet {
         int randomNumber1 = rand.nextInt(board.length);
         int randomNumber2 = rand.nextInt(board.length);
         Move move = new Move(randomNumber1, randomNumber2, direction);
-        while (board[randomNumber1][randomNumber2] != 3 || !validMove(state, board, move)) {
+        while (board[randomNumber1][randomNumber2] != 3 || !validMove(state, board, move, state.player)) {
             randomNumber1 = rand.nextInt(board.length);
             randomNumber2 = rand.nextInt(board.length);
             move.x = randomNumber1;
@@ -188,7 +188,7 @@ public class Parquet {
         }
         System.out.print("PC Random Move from [" + randomNumber1 + "][" + randomNumber2 + "] " + direction);
         return move;
-    }*/
+    }
 
     private static boolean validVoidMove(State state, int[][] board, Move move) {
         if (move.direction.equals("MoveRight") && move.y < board.length && move.y >= 0) {
@@ -237,6 +237,7 @@ public class Parquet {
     }
 
     public static void main(String args[]) {
+
         Scanner scanner = new Scanner(System.in);
         State state = new State("Board", 3);
         int size = 0;
@@ -255,15 +256,8 @@ public class Parquet {
 
             int depthLimit = 3;
 
-           /* long startTime = System.nanoTime();
-            makeEnemyMove(state, board, Minimax.getPCBestMove(state, board, depthLimit));
-            long endTime = System.nanoTime();
-            long duration = (endTime - startTime);
-            System.out.println(
-                    "getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000 + " Miliseconds");
-*/
             while (!state.checkGameOver(board)) {
-                
+
                 System.out.println("main  " + state.player);
                 long startTime = System.nanoTime();
                 makeEnemyMove(state, board, Minimax.getPCBestMove(state, board, depthLimit));
@@ -272,8 +266,8 @@ public class Parquet {
                 long duration = (endTime - startTime);
                 System.out.println("getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000
                         + " Miliseconds");
-                
-                if(state.checkGameOver(board)) {
+
+                if (state.checkGameOver(board)) {
                     System.out.println("PC WON!!");
                     break;
                 }
@@ -287,7 +281,7 @@ public class Parquet {
                 }
                 makeMove(state, board, move);
                 printBoard(board);
-                if(state.checkGameOver(board)) {
+                if (state.checkGameOver(board)) {
                     System.out.println("HUMAN WON!!");
                     break;
                 }

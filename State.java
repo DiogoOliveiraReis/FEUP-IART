@@ -38,8 +38,8 @@ public class State {
     }
 
     public double updateScore(State state, int[][] board) {
-        double distBot = 9999;
-        double distPlayer = 9999;
+        double distBot = 99999999;
+        double distPlayer = 99999999;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 if (board[i][j] == 3) {
