@@ -254,13 +254,14 @@ public class Parquet {
             else if (size == 2)
                 board = state.board6x6;
 
-            int depthLimit = 3;
+            int depthLimit = 8;
+            boolean alphaBetaPruning = true;
 
             while (!state.checkGameOver(board)) {
 
                 System.out.println("main  " + state.player);
                 long startTime = System.nanoTime();
-                makeEnemyMove(state, board, Minimax.getPCBestMove(state, board, depthLimit));
+                makeEnemyMove(state, board, Minimax.getPCBestMove(state, board, depthLimit, alphaBetaPruning));
                 printBoard(board);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
