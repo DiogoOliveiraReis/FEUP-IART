@@ -260,7 +260,29 @@ public class Parquet {
 
     public static void main(String args[]) {
 
+        System.out.println(" _____________________________________________________________________");
+        System.out.println("|                                                                     |");
+        System.out.println("|      ____     ___    ____      ___      _   _   ____    _______     |");
+        System.out.println("|     |  _ \\   / _ \\  |  _ \\    / _ \\    | | | | |  ___| |__   __|    |");
+        System.out.println("|     | |_| | | |_| | | |_| |  | | | |   | | | | | |___     | |       |");
+        System.out.println("|     |  __/  |  _  | |  _  |  | | | |   | | | | |  ___|    | |       | ");
+        System.out.println("|     | |     | | | | | | \\ \\  | |_|  \\  | |_| | | |___     | |       |");
+        System.out.println("|     |_|     |_| |_| |_|  \\_\\  \\___/\\_\\ |_____| |_____|    |_|       |");
+        System.out.println("|                                                                     |");
+        System.out.println("|                                                                     |");
+        System.out.println("|                           CHOOSE PLAY MODE:                         |");
+        System.out.println("|                                                                     |");
+        System.out.println("|                          Human vs Human - 1                         |");
+        System.out.println("|                            Human vs PC - 2                          |");
+        System.out.println("|                              PC vs PC - 3                           |");
+        System.out.println("|                                                                     |");
+        System.out.println("|_____________________________________________________________________|");
+        System.out.println("                                                                       ");
+        System.out.print("Press the number corresponding to the option you want:");
         Scanner scanner = new Scanner(System.in);
+
+        play(scanner);
+
         State state = new State("Board", 3);
         int size = 0;
         int board[][] = { {} };
@@ -271,58 +293,91 @@ public class Parquet {
             System.out.println("Board 6x6 - press 2");
             String input = scanner.nextLine();
             size = Integer.parseInt(input);
+
             if (size == 1)
                 board = state.board4x4;
             else if (size == 2)
                 board = state.board6x6;
+        }
 
-            int depthLimit = 3;
-            boolean alphaBetaPruning = true;
+        int depthLimit = 3;
+        boolean alphaBetaPruning = true;
 
-            while (!state.checkGameOver(board)) {
+        while (!state.checkGameOver(board)) {
 
-                System.out.println("main  " + state.player);
-                long startTime = System.nanoTime();
-                Move[] bestEnemyMoves = Minimax.getPCBestMove(state, board, depthLimit, alphaBetaPruning);
-                makeEnemyMove(state, board, bestEnemyMoves[0]);
-                printBoard(board);
-                makeVoidMove(state, board, bestEnemyMoves[1]);
-                printBoard(board);
-                long endTime = System.nanoTime();
-                long duration = (endTime - startTime);
-                System.out.println("getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000
-                        + " Miliseconds");
+            System.out.println("main  " + state.player);
+            long startTime = System.nanoTime();
+            Move[] bestEnemyMoves = Minimax.getPCBestMove(state, board, depthLimit, alphaBetaPruning);
+            makeEnemyMove(state, board, bestEnemyMoves[0]);
+            printBoard(board);
+            makeVoidMove(state, board, bestEnemyMoves[1]);
+            printBoard(board);
+            long endTime = System.nanoTime();
+            long duration = (endTime - startTime);
+            System.out.println("getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000
+                    + " Miliseconds");
 
-                if (state.checkGameOver(board)) {
-                    System.out.println("PC WON!!");
-                    break;
-                }
-
-                Move move = getUserMove(scanner, state);
-                while (!(validMove(state, board, move, 2))) {
-                    printBoard(board);
-
-                    System.out.print("Invalid Move\n");
-                    move = getUserMove(scanner, state);
-                }
-                makeMove(state, board, move);
-                printBoard(board);
-                if (state.checkGameOver(board)) {
-                    System.out.println("HUMAN WON!!");
-                    break;
-                }
-                
-                Move voidMove = getUserMove(scanner, state);
-                while (!(validVoidMove(state, board, voidMove))) {
-                    printBoard(board);
-
-                    System.out.print("Invalid Move\n");
-                    voidMove = getUserMove(scanner, state);
-                }
-                makeVoidMove(state, board, voidMove);
+            if (state.checkGameOver(board)) {
+                System.out.println("PC WON!!");
+                break;
             }
-            scanner.close();
-            System.out.println("GameOver");
+
+            Move move = getUserMove(scanner, state);
+            while (!(validMove(state, board, move, 2))) {
+                printBoard(board);
+
+                System.out.print("Invalid Move\n");
+                move = getUserMove(scanner, state);
+            }
+            makeMove(state, board, move);
+            printBoard(board);
+            if (state.checkGameOver(board)) {
+                System.out.println("HUMAN WON!!");
+                break;
+            }
+            
+            Move voidMove = getUserMove(scanner, state);
+            while (!(validVoidMove(state, board, voidMove))) {
+                printBoard(board);
+
+                System.out.print("Invalid Move\n");
+                voidMove = getUserMove(scanner, state);
+            }
+            makeVoidMove(state, board, voidMove);
+        }
+        scanner.close();
+        System.out.println("GameOver");
+    }
+
+
+    private static void play(Scanner scanner) {
+        String input = scanner.nextLine();
+        int mode = Integer.parseInt(input);
+
+        if (mode == 1) {
+            HumanVsHuman();
+        }
+        else if (mode == 2) {
+            HumanVsPC();
+        }
+        else if (mode == 3) {
+            PCVsPC();
+        }
+        else {
+            play(scanner);
         }
     }
+
+    private static void HumanVsHuman() {
+        System.out.println("HH");
+    }
+
+    private static void HumanVsPC() {
+        System.out.println("HP");
+    }
+
+    private static void PCVsPC() {
+        System.out.println("PP");
+    }
+
 }
