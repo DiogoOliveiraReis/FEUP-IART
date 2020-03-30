@@ -2,25 +2,26 @@ import java.lang.Math;
 
 public class Minimax extends Parquet {
 
-    public static Move[] getPCBestMove(State state, int[][] board, int depthLimit, boolean alfaBeta) {
+    public static Move[] getPCBestMove(State state, int[][] board, int depthLimit, boolean alfaBeta, int player) {
         System.out.println("AlphaBetaPruning = " + alfaBeta);
         double alfa = -99999999;
         double beta = 99999999;
         double score;
         int depth = 0;
-        Move bestMove = new Move(0, 0, 0);
-        Move bestVoidMove = new Move(0, 0, 0);
+        Move bestMove = new Move(0, 0, 0, player);
+        Move bestVoidMove = new Move(0, 0, 0, player);
         double bestScore = -99999999;
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board.length; y++) {
                 for (int d = 0; d < 4; d++) {
-                    Move move = new Move(x, y, d);
-                    if (validMove(state, board, move, 3)) {
-                        makeEnemyMove(state, board, move);
+                    Move move = new Move(x, y, d, player);
+                    if (validMove(state, board, move, player)) {
+                        if(player == 3) makeMoveTopPlayer(state, board, move);
+                        else makeMoveBottomPlayer(state, board, move);
                         for (int xv = 0; xv < board.length; xv++) {
                             for (int yv = 0; yv < board.length; yv++) {
                                 for(int voidDir = 0; voidDir < 4; voidDir++) {
-                                    Move moveVoid = new Move(xv, yv, voidDir);
+                                    Move moveVoid = new Move(xv, yv, voidDir, player);
                                     if (voidDir == 0) {
                                         moveVoid.direction = "MoveUp";
                                     } else if (voidDir == 1) {
@@ -35,9 +36,9 @@ public class Minimax extends Parquet {
 
 
                                         if (alfaBeta)
-                                            score = minimax(state, board, depth, depthLimit, false, alfa, beta);
+                                            score = minimax(state, board, depth, depthLimit, false, alfa, beta, player);
                                         else
-                                            score = minimax(state, board, depth, depthLimit, false);
+                                            score = minimax(state, board, depth, depthLimit, false, player);
                                                                                     
                                         revertVoidMove(state, board, moveVoid);
 
@@ -51,7 +52,8 @@ public class Minimax extends Parquet {
                                 }
                             }
                         }
-                        revertEnemyMove(state, board, move);
+                        if(player == 3) revertMoveTopPlayer(state, board, move);
+                        else revertMakeMoveBottomPlayer(state, board, move);
                     }
                 }
             }
@@ -65,26 +67,27 @@ public class Minimax extends Parquet {
     }
 
     public static double minimax(State state, int[][] board, int depth, int depthLimit, boolean isMax, double alfa,
-            double beta) {
+            double beta, int player) {
         double score;
         if (depthLimit == 0) {
-            return state.updateScore(state, board);
+            return state.updateScore(state, board, player);
         }
         if (state.checkGameOver(board)) {
-            return state.updateScore(state, board);
+            return state.updateScore(state, board, player);
         }
         if (isMax) {
             double bestScore = -99999999;
             for (int x = 0; x < board.length; x++) {
                 for (int y = 0; y < board.length; y++) {
                     for (int d = 0; d < 4; d++) {
-                        Move move = new Move(x, y, d);
-                        if (validMove(state, board, move, 3)) {
-                            makeEnemyMove(state, board, move);
+                        Move move = new Move(x, y, d, player);
+                        if (validMove(state, board, move, player)) {
+                            if(player == 3) makeMoveTopPlayer(state, board, move);
+                            else makeMoveBottomPlayer(state, board, move);
                             for (int xv = 0; xv < board.length; xv++) {
                                 for (int yv = 0; yv < board.length; yv++) {
                                     for(int voidDir = 0; voidDir < 4; voidDir++) {
-                                        Move moveVoid = new Move(xv, yv, voidDir);
+                                        Move moveVoid = new Move(xv, yv, voidDir, player);
                                         if (voidDir == 0) {
                                             moveVoid.direction = "MoveUp";
                                         } else if (voidDir == 1) {
@@ -97,7 +100,7 @@ public class Minimax extends Parquet {
                                         if(validVoidMove(state, board, moveVoid)) {
                                             makeVoidMove(state, board, moveVoid);
                                             
-                                            score = minimax(state, board, depth + 1, depthLimit - 1, false, alfa, beta);
+                                            score = minimax(state, board, depth + 1, depthLimit - 1, false, alfa, beta, player);
 
                                             revertVoidMove(state, board, moveVoid);
 
@@ -111,7 +114,8 @@ public class Minimax extends Parquet {
                                     }
                                 }
                             }
-                            revertEnemyMove(state, board, move);
+                            if (player == 3) revertMoveTopPlayer(state, board, move);
+                            else revertMakeMoveBottomPlayer(state, board, move);
                         }
                     }
                 }
@@ -122,22 +126,24 @@ public class Minimax extends Parquet {
             for (int x = 0; x < board.length; x++) {
                 for (int y = 0; y < board.length; y++) {
                     for (int d = 0; d < 4; d++) {
-                        Move move = new Move(x, y, d);
-                        if (d == 0) {
-                            move.direction = "MoveUpRightJump";
-                        } else if (d == 1) {
-                            move.direction = "MoveUpRight";
-                        } else if (d == 2) {
-                            move.direction = "MoveUp";
-                        } else if (d == 3) {
-                            move.direction = "MoveRight";
+                        Move move;
+                        int p;
+                        if(player == 3) {
+                            move = new Move(x, y, d, 2);
+                            p = 2;
                         }
-                        if (validMove(state, board, move, 2)) {
-                            makeMove(state, board, move);
+                        else {
+                            move = new Move(x, y, d, 3);
+                            p = 3;
+                        }
+                        
+                        if (validMove(state, board, move, p)) {
+                            if(player == 3) makeMoveBottomPlayer(state, board, move);
+                            else makeMoveTopPlayer(state, board, move);
                             for (int xv = 0; xv < board.length; xv++) {
                                 for (int yv = 0; yv < board.length; yv++) {
                                     for(int voidDir = 0; voidDir < 4; voidDir++) {
-                                        Move moveVoid = new Move(xv, yv, voidDir);
+                                        Move moveVoid = new Move(xv, yv, voidDir, player);
                                         if (voidDir == 0) {
                                             moveVoid.direction = "MoveUp";
                                         } else if (voidDir == 1) {
@@ -150,7 +156,7 @@ public class Minimax extends Parquet {
                                         if(validVoidMove(state, board, moveVoid)) {
                                             makeVoidMove(state, board, moveVoid);
                                             
-                                            score = minimax(state, board, depth + 1, depthLimit - 1, true, alfa, beta);
+                                            score = minimax(state, board, depth + 1, depthLimit - 1, true, alfa, beta, player);
 
                                             revertVoidMove(state, board, moveVoid);
 
@@ -164,7 +170,8 @@ public class Minimax extends Parquet {
                                     }
                                 }
                             }
-                            revertMakeMove(state, board, move);
+                            if (player == 3) revertMakeMoveBottomPlayer(state, board, move);
+                            else revertMoveTopPlayer(state, board, move);
                         }
                     }
                 }
@@ -173,26 +180,27 @@ public class Minimax extends Parquet {
         }
     }
 
-    public static double minimax(State state, int[][] board, int depth, int depthLimit, boolean isMax) {
+    public static double minimax(State state, int[][] board, int depth, int depthLimit, boolean isMax, int player) {
         double score;
         if (depthLimit == 0) {
-            return state.updateScore(state, board);
+            return state.updateScore(state, board, player);
         }
         if (state.checkGameOver(board)) {
-            return state.updateScore(state, board);
+            return state.updateScore(state, board, player);
         }
         if (isMax) {
             double bestScore = -99999999;
             for (int x = 0; x < board.length; x++) {
                 for (int y = 0; y < board.length; y++) {
                     for (int d = 0; d < 4; d++) {
-                        Move move = new Move(x, y, d);
-                        if (validMove(state, board, move, 3)) {
-                            makeEnemyMove(state, board, move);
+                        Move move = new Move(x, y, d, player);
+                        if (validMove(state, board, move, player)) {
+                            if (player == 3) makeMoveTopPlayer(state, board, move);
+                            else makeMoveBottomPlayer(state, board, move);
                             for (int xv = 0; xv < board.length; xv++) {
                                 for (int yv = 0; yv < board.length; yv++) {
                                     for(int voidDir = 0; voidDir < 4; voidDir++) {
-                                        Move moveVoid = new Move(xv, yv, voidDir);
+                                        Move moveVoid = new Move(xv, yv, voidDir, player);
                                         if (voidDir == 0) {
                                             moveVoid.direction = "MoveUp";
                                         } else if (voidDir == 1) {
@@ -205,7 +213,7 @@ public class Minimax extends Parquet {
                                         if(validVoidMove(state, board, moveVoid)) {
                                             makeVoidMove(state, board, moveVoid);
             
-                                            score = minimax(state, board, depth + 1, depthLimit - 1, false);
+                                            score = minimax(state, board, depth + 1, depthLimit - 1, false, player);
                                             
                                             revertVoidMove(state, board, moveVoid);
             
@@ -216,7 +224,8 @@ public class Minimax extends Parquet {
                                     }
                                 }
                             }
-                            revertEnemyMove(state, board, move);
+                            if(player == 3) revertMoveTopPlayer(state, board, move);
+                            else revertMakeMoveBottomPlayer(state, board, move);
                         }
                     }
                 }
@@ -227,22 +236,28 @@ public class Minimax extends Parquet {
             for (int x = 0; x < board.length; x++) {
                 for (int y = 0; y < board.length; y++) {
                     for (int d = 0; d < 4; d++) {
-                        Move move = new Move(x, y, d);
-                        if (d == 0) {
-                            move.direction = "MoveUpRightJump";
-                        } else if (d == 1) {
-                            move.direction = "MoveUpRight";
-                        } else if (d == 2) {
-                            move.direction = "MoveUp";
-                        } else if (d == 3) {
-                            move.direction = "MoveRight";
+                        Move move;
+                        if (player == 3) move = new Move(x, y, d, 2);
+                        else move = new Move(x, y, d, 3);
+                        
+                        int p;
+                        if(player == 3) {
+                            move = new Move(x, y, d, 2);
+                            p = 2;
                         }
-                        if (validMove(state, board, move, 2)) {
-                            makeMove(state, board, move);
+                        else {
+                            move = new Move(x, y, d, 3);
+                            p = 3;
+                        }
+                        
+                        if (validMove(state, board, move, p)) {
+                            if(player == 3) makeMoveBottomPlayer(state, board, move);
+                            else makeMoveTopPlayer(state, board, move);
+
                             for (int xv = 0; xv < board.length; xv++) {
                                 for (int yv = 0; yv < board.length; yv++) {
                                     for(int voidDir = 0; voidDir < 4; voidDir++) {
-                                        Move moveVoid = new Move(xv, yv, voidDir);
+                                        Move moveVoid = new Move(xv, yv, voidDir, player);
                                         if (voidDir == 0) {
                                             moveVoid.direction = "MoveUp";
                                         } else if (voidDir == 1) {
@@ -255,7 +270,7 @@ public class Minimax extends Parquet {
                                         if(validVoidMove(state, board, moveVoid)) {
                                             makeVoidMove(state, board, moveVoid);
                                             
-                                            score = minimax(state, board, depth + 1, depthLimit - 1, true);
+                                            score = minimax(state, board, depth + 1, depthLimit - 1, true, player);
 
                                             revertVoidMove(state, board, moveVoid);
 
@@ -266,7 +281,8 @@ public class Minimax extends Parquet {
                                     }
                                 }
                             }
-                            revertMakeMove(state, board, move);
+                            if (player == 3) revertMakeMoveBottomPlayer(state, board, move);
+                            else revertMoveTopPlayer(state, board, move);
                         }
                     }
                 }
