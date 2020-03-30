@@ -455,7 +455,6 @@ public class Parquet {
         }
     }
 
-<<<<<<< HEAD
     private static void PCVsPC(Scanner scanner, State state, int[][] board) {
         System.out.println("Top BOT dificulty.");
         int depth1 = chooseBotDificulty(scanner);
@@ -502,20 +501,6 @@ public class Parquet {
                 System.out.println("PC WON!!");
                 break;
             }
-=======
-    private static void play(Scanner scanner) {
-        String input = scanner.nextLine();
-        int mode = Integer.parseInt(input);
-
-        if (mode == 1) {
-            HumanVsHuman();
-        } else if (mode == 2) {
-            HumanVsPC();
-        } else if (mode == 3) {
-            PCVsPC();
-        } else {
-            play(scanner);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
         }
     }
 

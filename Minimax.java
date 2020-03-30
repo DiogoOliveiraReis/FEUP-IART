@@ -20,13 +20,8 @@ public class Minimax extends Parquet {
                         else makeMoveBottomPlayer(state, board, move);
                         for (int xv = 0; xv < board.length; xv++) {
                             for (int yv = 0; yv < board.length; yv++) {
-<<<<<<< HEAD
                                 for(int voidDir = 0; voidDir < 4; voidDir++) {
                                     Move moveVoid = new Move(xv, yv, voidDir, player);
-=======
-                                for (int voidDir = 0; voidDir < 4; voidDir++) {
-                                    Move moveVoid = new Move(xv, yv, voidDir);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
                                     if (voidDir == 0) {
                                         moveVoid.direction = "MoveUp";
                                     } else if (voidDir == 1) {
@@ -42,13 +37,9 @@ public class Minimax extends Parquet {
                                         if (alfaBeta)
                                             score = minimax(state, board, depth, depthLimit, false, alfa, beta, player);
                                         else
-<<<<<<< HEAD
                                             score = minimax(state, board, depth, depthLimit, false, player);
                                                                                     
                                         revertVoidMove(state, board, moveVoid);
-=======
-                                            score = minimax(state, board, depth, depthLimit, false);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
 
                                         revertVoidMove(state, board, moveVoid);
 
@@ -95,13 +86,8 @@ public class Minimax extends Parquet {
                             else makeMoveBottomPlayer(state, board, move);
                             for (int xv = 0; xv < board.length; xv++) {
                                 for (int yv = 0; yv < board.length; yv++) {
-<<<<<<< HEAD
                                     for(int voidDir = 0; voidDir < 4; voidDir++) {
                                         Move moveVoid = new Move(xv, yv, voidDir, player);
-=======
-                                    for (int voidDir = 0; voidDir < 4; voidDir++) {
-                                        Move moveVoid = new Move(xv, yv, voidDir);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
                                         if (voidDir == 0) {
                                             moveVoid.direction = "MoveUp";
                                         } else if (voidDir == 1) {
@@ -113,13 +99,8 @@ public class Minimax extends Parquet {
                                         }
                                         if (validVoidMove(state, board, moveVoid)) {
                                             makeVoidMove(state, board, moveVoid);
-<<<<<<< HEAD
                                             
                                             score = minimax(state, board, depth + 1, depthLimit - 1, false, alfa, beta, player);
-=======
-
-                                            score = minimax(state, board, depth + 1, depthLimit - 1, false, alfa, beta);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
 
                                             revertVoidMove(state, board, moveVoid);
 
@@ -161,13 +142,8 @@ public class Minimax extends Parquet {
                             else makeMoveTopPlayer(state, board, move);
                             for (int xv = 0; xv < board.length; xv++) {
                                 for (int yv = 0; yv < board.length; yv++) {
-<<<<<<< HEAD
                                     for(int voidDir = 0; voidDir < 4; voidDir++) {
                                         Move moveVoid = new Move(xv, yv, voidDir, player);
-=======
-                                    for (int voidDir = 0; voidDir < 4; voidDir++) {
-                                        Move moveVoid = new Move(xv, yv, voidDir);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
                                         if (voidDir == 0) {
                                             moveVoid.direction = "MoveUp";
                                         } else if (voidDir == 1) {
@@ -179,13 +155,8 @@ public class Minimax extends Parquet {
                                         }
                                         if (validVoidMove(state, board, moveVoid)) {
                                             makeVoidMove(state, board, moveVoid);
-<<<<<<< HEAD
                                             
                                             score = minimax(state, board, depth + 1, depthLimit - 1, true, alfa, beta, player);
-=======
-
-                                            score = minimax(state, board, depth + 1, depthLimit - 1, true, alfa, beta);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
 
                                             revertVoidMove(state, board, moveVoid);
 
@@ -228,13 +199,8 @@ public class Minimax extends Parquet {
                             else makeMoveBottomPlayer(state, board, move);
                             for (int xv = 0; xv < board.length; xv++) {
                                 for (int yv = 0; yv < board.length; yv++) {
-<<<<<<< HEAD
                                     for(int voidDir = 0; voidDir < 4; voidDir++) {
                                         Move moveVoid = new Move(xv, yv, voidDir, player);
-=======
-                                    for (int voidDir = 0; voidDir < 4; voidDir++) {
-                                        Move moveVoid = new Move(xv, yv, voidDir);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
                                         if (voidDir == 0) {
                                             moveVoid.direction = "MoveUp";
                                         } else if (voidDir == 1) {
@@ -246,15 +212,9 @@ public class Minimax extends Parquet {
                                         }
                                         if (validVoidMove(state, board, moveVoid)) {
                                             makeVoidMove(state, board, moveVoid);
-<<<<<<< HEAD
             
                                             score = minimax(state, board, depth + 1, depthLimit - 1, false, player);
                                             
-=======
-
-                                            score = minimax(state, board, depth + 1, depthLimit - 1, false);
-
->>>>>>> c3c719893e41a079d20060d252999286f461319b
                                             revertVoidMove(state, board, moveVoid);
 
                                             if (score > bestScore) {
@@ -296,13 +256,8 @@ public class Minimax extends Parquet {
 
                             for (int xv = 0; xv < board.length; xv++) {
                                 for (int yv = 0; yv < board.length; yv++) {
-<<<<<<< HEAD
                                     for(int voidDir = 0; voidDir < 4; voidDir++) {
                                         Move moveVoid = new Move(xv, yv, voidDir, player);
-=======
-                                    for (int voidDir = 0; voidDir < 4; voidDir++) {
-                                        Move moveVoid = new Move(xv, yv, voidDir);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
                                         if (voidDir == 0) {
                                             moveVoid.direction = "MoveUp";
                                         } else if (voidDir == 1) {
@@ -314,13 +269,8 @@ public class Minimax extends Parquet {
                                         }
                                         if (validVoidMove(state, board, moveVoid)) {
                                             makeVoidMove(state, board, moveVoid);
-<<<<<<< HEAD
                                             
                                             score = minimax(state, board, depth + 1, depthLimit - 1, true, player);
-=======
-
-                                            score = minimax(state, board, depth + 1, depthLimit - 1, true);
->>>>>>> c3c719893e41a079d20060d252999286f461319b
 
                                             revertVoidMove(state, board, moveVoid);
 
