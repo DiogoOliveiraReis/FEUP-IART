@@ -192,22 +192,26 @@ public class Parquet {
 
     protected static boolean validVoidMove(State state, int[][] board, Move move) {
 
-        if (move.direction.equals("MoveRight") && move.y < board.length - 1 && move.y >= 0 && !(move.y == board.length - 2 && move.x == 0)) {
+        if (move.direction.equals("MoveRight") && move.y < board.length - 1 && move.y >= 0
+                && !(move.y == board.length - 2 && move.x == 0)) {
             if (board[move.x][move.y] == 1) {
                 if (board[move.x][move.y + 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveLeft") && move.y < board.length && move.y > 0 && !(move.y == 1 && move.x == board.length - 1)) {
+        } else if (move.direction.equals("MoveLeft") && move.y < board.length && move.y > 0
+                && !(move.y == 1 && move.x == board.length - 1)) {
             if (board[move.x][move.y] == 1) {
                 if (board[move.x][move.y - 1] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveUp") && move.x < board.length && move.x > 0 && !(move.x == 1 && move.y == board.length - 1)) {
+        } else if (move.direction.equals("MoveUp") && move.x < board.length && move.x > 0
+                && !(move.x == 1 && move.y == board.length - 1)) {
             if (board[move.x][move.y] == 1) {
                 if (board[move.x - 1][move.y] == 0)
                     return true;
             }
-        } else if (move.direction.equals("MoveDown") && move.x < board.length - 1 && move.x >= 0 && !(move.x == board.length - 2 && move.y == 0)) {
+        } else if (move.direction.equals("MoveDown") && move.x < board.length - 1 && move.x >= 0
+                && !(move.x == board.length - 2 && move.y == 0)) {
             if (board[move.x][move.y] == 1) {
                 if (board[move.x + 1][move.y] == 0)
                     return true;
@@ -278,7 +282,7 @@ public class Parquet {
         System.out.println("|                                                                     |");
         System.out.println("|_____________________________________________________________________|");
         System.out.println("                                                                       ");
-        System.out.print("Press the number corresponding to the option you want:");
+        System.out.print("Press the number corresponding to the option you want: ");
         Scanner scanner = new Scanner(System.in);
 
         play(scanner);
@@ -314,8 +318,8 @@ public class Parquet {
             printBoard(board);
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
-            System.out.println("getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000
-                    + " Miliseconds");
+            System.out.println(
+                    "getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000 + " Miliseconds");
 
             if (state.checkGameOver(board)) {
                 System.out.println("PC WON!!");
@@ -335,7 +339,7 @@ public class Parquet {
                 System.out.println("HUMAN WON!!");
                 break;
             }
-            
+
             Move voidMove = getUserMove(scanner, state);
             while (!(validVoidMove(state, board, voidMove))) {
                 printBoard(board);
@@ -349,21 +353,17 @@ public class Parquet {
         System.out.println("GameOver");
     }
 
-
     private static void play(Scanner scanner) {
         String input = scanner.nextLine();
         int mode = Integer.parseInt(input);
 
         if (mode == 1) {
             HumanVsHuman();
-        }
-        else if (mode == 2) {
+        } else if (mode == 2) {
             HumanVsPC();
-        }
-        else if (mode == 3) {
+        } else if (mode == 3) {
             PCVsPC();
-        }
-        else {
+        } else {
             play(scanner);
         }
     }
