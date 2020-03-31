@@ -38,20 +38,18 @@ public class State {
     }
 
     public boolean checkScoreTop(int[][] board) {
-        if(board[board.length-1][0] == 3) {
-            board[board.length-1][0] = 0;
+        if (board[board.length - 1][0] == 3) {
+            board[board.length - 1][0] = 0;
             return true;
-        }
-        else
+        } else
             return false;
     }
 
     public boolean checkScoreBottom(int[][] board) {
-        if(board[0][board.length-1] == 2) {
-            board[0][board.length-1] = 0;
+        if (board[0][board.length - 1] == 2) {
+            board[0][board.length - 1] = 0;
             return true;
-        }
-        else
+        } else
             return false;
     }
 
@@ -60,9 +58,11 @@ public class State {
         double distBottomPlayer = 0;
         int player2;
 
-        if (player == 3) player2 = 2;
-        else player2 = 3;
-        
+        if (player == 3)
+            player2 = 2;
+        else
+            player2 = 3;
+
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 if (board[i][j] == player) {
