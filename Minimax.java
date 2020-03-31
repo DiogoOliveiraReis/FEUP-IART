@@ -72,7 +72,7 @@ public class Minimax extends Parquet {
         if (depthLimit == 0) {
             return state.updateScore(state, board, player);
         }
-        if (state.checkGameOver(board)) {
+        if (state.checkPlayerScored(board)) {
             return state.updateScore(state, board, player);
         }
         if (isMax) {
@@ -185,7 +185,7 @@ public class Minimax extends Parquet {
         if (depthLimit == 0) {
             return state.updateScore(state, board, player);
         }
-        if (state.checkGameOver(board)) {
+        if (state.checkPlayerScored(board)) {
             return state.updateScore(state, board, player);
         }
         if (isMax) {

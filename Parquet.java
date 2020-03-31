@@ -273,7 +273,7 @@ public class Parquet {
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws InterruptedException {
 
         System.out.println(" _____________________________________________________________________");
         System.out.println("|                                                                     |");
@@ -326,7 +326,7 @@ public class Parquet {
     }
 
 
-    private static void play(Scanner scanner, State state) {
+    private static void play(Scanner scanner, State state) throws InterruptedException {
         String input = scanner.nextLine();
         int mode = Integer.parseInt(input);
 
@@ -350,7 +350,10 @@ public class Parquet {
 
     private static void HumanVsHuman(Scanner scanner, State state, int[][] board) {
         
-        while (!state.checkGameOver(board)) {
+        int scoreHuman1 = 0;
+        int scoreHuman2 = 0;
+
+        while (scoreHuman1 < 3 && scoreHuman2 < 3) {
             printBoard(board);
 
             //----------- Top player turn -------------
@@ -364,9 +367,10 @@ public class Parquet {
             makeMoveTopPlayer(state, board, move);
             printBoard(board);
 
-            if (state.checkGameOver(board)) {
-                System.out.println("TOP PLAYER WON!!");
-                break;
+            if(state.checkScoreTop(board)) {
+                scoreHuman1++;
+                if(scoreHuman1 == 3)
+                    break;
             }
             
             Move voidMove = getUserMove(scanner, state);
@@ -376,7 +380,7 @@ public class Parquet {
                 voidMove = getUserMove(scanner, state);
             }
             makeVoidMove(state, board, voidMove);
-            printBoard(board);
+            printBoard(board);            
 
 
             //---------- Bottom player turn ------------
@@ -389,9 +393,11 @@ public class Parquet {
             }
             makeMoveBottomPlayer(state, board, move);
             printBoard(board);
-            if (state.checkGameOver(board)) {
-                System.out.println("BOTTOM PLAYER WON!!");
-                break;
+            
+            if(state.checkScoreBottom(board)) {
+                scoreHuman2++;
+                if(scoreHuman2 == 3)
+                    break;
             }
             
             voidMove = getUserMove(scanner, state);
@@ -402,32 +408,43 @@ public class Parquet {
             }
             makeVoidMove(state, board, voidMove);
         }
+        printBoard(board);
+        if(scoreHuman1 == 3)
+            System.out.println("Top player won!");
+        else if(scoreHuman2 == 3)
+            System.out.println("Bottom player won!");
     }
 
     private static void HumanVsPC(Scanner scanner, State state, int[][] board) {
         int depthLimit = chooseBotDificulty(scanner);
         boolean alphaBetaPruning = true;
 
-        while (!state.checkGameOver(board)) {
+        int scoreHuman = 0;
+        int scorePC = 0;
+
+        while (scoreHuman < 3 && scorePC < 3) {
 
             //---------------- PC turn -------------------
             System.out.println("PC turn!\n");
             long startTime = System.nanoTime();
             Move[] bestEnemyMoves = Minimax.getPCBestMove(state, board, depthLimit, alphaBetaPruning, 3);
-            makeMoveTopPlayer(state, board, bestEnemyMoves[0]);
-            printBoard(board);
-            makeVoidMove(state, board, bestEnemyMoves[1]);
+            if(bestEnemyMoves[0].x != 0 || bestEnemyMoves[0].y != 0 || bestEnemyMoves[0].direction != "MoveDownLeftJump") {
+                makeMoveTopPlayer(state, board, bestEnemyMoves[0]);
+                printBoard(board);
+                makeVoidMove(state, board, bestEnemyMoves[1]);
+            }
             printBoard(board);
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
-            System.out.println(
-                    "getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000 + " Miliseconds");
+            System.out.println("getPCBestMove DepthLimit = " + depthLimit + " Duration = " + duration / 1000000 + " Miliseconds");
 
-            if (state.checkGameOver(board)) {
-                System.out.println("PC WON!!");
-                break;
+
+            if(state.checkScoreTop(board)) {
+                scorePC++;
+                if(scorePC == 3)
+                    break;
             }
-
+            
 
             //---------------- Human turn --------------------
             System.out.println("Human turn!\n");
@@ -439,9 +456,11 @@ public class Parquet {
             }
             makeMoveBottomPlayer(state, board, move);
             printBoard(board);
-            if (state.checkGameOver(board)) {
-                System.out.println("HUMAN WON!!");
-                break;
+            
+            if(state.checkScoreBottom(board)) {
+                scoreHuman++;
+                if(scoreHuman == 3)
+                    break;
             }
 
             Move voidMove = getUserMove(scanner, state);
@@ -453,9 +472,14 @@ public class Parquet {
             makeVoidMove(state, board, voidMove);
             printBoard(board);
         }
+        printBoard(board);
+        if(scorePC == 3)
+            System.out.println("Top player won!");
+        else if(scoreHuman == 3)
+            System.out.println("Bottom player won!");
     }
 
-    private static void PCVsPC(Scanner scanner, State state, int[][] board) {
+    private static void PCVsPC(Scanner scanner, State state, int[][] board) throws InterruptedException {
         System.out.println("Top BOT dificulty.");
         int depth1 = chooseBotDificulty(scanner);
 
@@ -463,45 +487,58 @@ public class Parquet {
         int depth2 = chooseBotDificulty(scanner);
 
         boolean alphaBetaPruning = true;
+        int scorePC1 = 0;
+        int scorePC2 = 0;
 
-        while (!state.checkGameOver(board)) {
+        while (scorePC1 < 3 && scorePC2 < 3) {
                 
             //---------------- PC top turn -------------------
             System.out.println("PC top turn!\n");
             long startTime = System.nanoTime();
             Move[] bestMove = Minimax.getPCBestMove(state, board, depth1, alphaBetaPruning, 3);
-            makeMoveTopPlayer(state, board, bestMove[0]);
-            printBoard(board);
-            makeVoidMove(state, board, bestMove[1]);
+            if(bestMove[0].x != 0 || bestMove[0].y != 0 || bestMove[0].direction != "MoveDownLeftJump") {
+                makeMoveTopPlayer(state, board, bestMove[0]);
+                printBoard(board);
+                makeVoidMove(state, board, bestMove[1]);
+            }
             printBoard(board);
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);
-            System.out.println("getPCBestMove DepthLimit = " + depth1 + " Duration = " + duration / 1000000
-                    + " Miliseconds");
+            System.out.println("getPCBestMove DepthLimit = " + depth1 + " Duration = " + duration / 1000000 + " Miliseconds");
 
-            if (state.checkGameOver(board)) {
-                System.out.println("PC WON!!");
-                break;
+            if(state.checkScoreTop(board)) {
+                scorePC1++;
+                if(scorePC1 == 3)
+                    break;
             }
+            
+            Thread.sleep(1000);
+            
 
             //---------------- PC bottom turn ----------------
             System.out.println("PC bottom turn!\n");
             startTime = System.nanoTime();
             bestMove = Minimax.getPCBestMove(state, board, depth2, alphaBetaPruning, 2);
-            makeMoveBottomPlayer(state, board, bestMove[0]);
-            printBoard(board);
-            makeVoidMove(state, board, bestMove[1]);
+            if(bestMove[0].x != 0 || bestMove[0].y != 0 || bestMove[0].direction != "MoveUpRightJump") {
+                makeMoveBottomPlayer(state, board, bestMove[0]);
+                printBoard(board);
+                makeVoidMove(state, board, bestMove[1]);
+            }
             printBoard(board);
             endTime = System.nanoTime();
             duration = (endTime - startTime);
-            System.out.println("getPCBestMove DepthLimit = " + depth2 + " Duration = " + duration / 1000000
-                    + " Miliseconds");
+            System.out.println("getPCBestMove DepthLimit = " + depth2 + " Duration = " + duration / 1000000 + " Miliseconds");
 
-            if (state.checkGameOver(board)) {
-                System.out.println("PC WON!!");
-                break;
-            }
+            if(state.checkScoreBottom(board))
+                scorePC2++;
+
+            Thread.sleep(1000);
         }
+        printBoard(board);
+        if(scorePC1 == 3)
+            System.out.println("Top player won!");
+        else if(scorePC2 == 3)
+            System.out.println("Bottom player won!");
     }
 
     private static int chooseBotDificulty(Scanner scanner) {
@@ -517,5 +554,4 @@ public class Parquet {
 
         return depth;
     }
-
 }

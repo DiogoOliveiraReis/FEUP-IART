@@ -2,16 +2,16 @@ public class State {
 
     public int[][] board6x6 = {
         { 0, 0, 0, 0, 3, 0 },
-        { 0, 1, 0, 0, 0, 3 },
+        { 0, 1, 0, 0, 3, 3 },
         { 0, 0, 1, 0, 0, 0 },
         { 0, 0, 0, 1, 0, 0 },
-        { 2, 0, 0, 0, 1, 0 },
+        { 2, 2, 0, 0, 1, 0 },
         { 0, 2, 0, 0, 0, 0 } };
 
     public int[][] board4x4 = {
         { 0, 0, 3, 0 },
-        { 0, 1, 0, 3 },
-        { 2, 0, 1, 0 },
+        { 0, 1, 3, 3 },
+        { 2, 2, 1, 0 },
         { 0, 2, 0, 0 } };
 
     public int player;
@@ -25,7 +25,7 @@ public class State {
         player = p;
     }
 
-    public boolean checkGameOver(int[][] board) {
+    public boolean checkPlayerScored(int[][] board) {
         if (board[board.length - 1][0] == 3) {
             gameover = true;
             return true;
@@ -37,9 +37,27 @@ public class State {
         return false;
     }
 
+    public boolean checkScoreTop(int[][] board) {
+        if(board[board.length-1][0] == 3) {
+            board[board.length-1][0] = 0;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean checkScoreBottom(int[][] board) {
+        if(board[0][board.length-1] == 2) {
+            board[0][board.length-1] = 0;
+            return true;
+        }
+        else
+            return false;
+    }
+
     public double updateScore(State state, int[][] board, int player) {
-        double distTopPlayer = 99999999;
-        double distBottomPlayer = 99999999;
+        double distTopPlayer = 0;
+        double distBottomPlayer = 0;
         int player2;
 
         if (player == 3) player2 = 2;
@@ -48,14 +66,14 @@ public class State {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 if (board[i][j] == player) {
-                    distTopPlayer = Math.min(Math.sqrt(Math.pow(i - (board.length - 1), 2) + Math.pow(j, 2)), distTopPlayer);
+                    distTopPlayer += Math.sqrt(Math.pow(i - (board.length - 1), 2) + Math.pow(j, 2));
                 }
             }
         }
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 if (board[i][j] == player2) {
-                    distBottomPlayer = Math.min(Math.sqrt(Math.pow(i, 2) + Math.pow(j - (board.length - 1), 2)), distBottomPlayer);
+                    distBottomPlayer += Math.sqrt(Math.pow(i, 2) + Math.pow(j - (board.length - 1), 2));
                 }
             }
         }
