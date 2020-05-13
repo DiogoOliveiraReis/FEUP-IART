@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using UnityEngine;
 
@@ -32,8 +33,13 @@ public class PieceManager : MonoBehaviour
             newPiece.Setup(Color.blue, new Color32(80, 124, 159, 255), this);
         }
         else {
-            newPiece.Setup(Color.black, new Color32(210, 95, 64, 255), this);
+            newPiece.Setup(Color.red, new Color32(210, 95, 64, 255), this);
         }
         newPiece.Place(board.mAllCells[x, y]);
+    }
+
+    void Update()
+    {
+
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 224568951800357832}
   - component: {fileID: 222868883806471128}
   - component: {fileID: 114197127040377812}
-  - component: {fileID: 114674287243002110}
+  - component: {fileID: 6293741568127942376}
   m_Layer: 5
   m_Name: Cell
   m_TagString: Untagged
@@ -76,7 +76,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &114674287243002110
+--- !u!114 &6293741568127942376
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -88,6 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b07aabec86c4d742b381cc0309f0b8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mCurrentPiece: {fileID: 0}
   outlineImage: {fileID: 0}
   boardPosition: {x: 0, y: 0}
   board: {fileID: 0}
