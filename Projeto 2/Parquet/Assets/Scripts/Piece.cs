@@ -54,6 +54,7 @@ public class Piece : EventTrigger
     }
 
     // Update is called once per frame
+    /*
     void Update()
     {
         Color Player1Color = Color.blue;
@@ -113,4 +114,5 @@ public class Piece : EventTrigger
             }
         }
     }
+    */
 }

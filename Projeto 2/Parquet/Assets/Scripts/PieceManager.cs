@@ -17,8 +17,10 @@ public class PieceManager : MonoBehaviour
 
     public void Setup(Board board)
     {
+        /*
         PlacePiece(2, 1, 1, board);
         PlacePiece(3, 6, 6, board);
+        */
     }
 
     private void PlacePiece(int player, int x, int y, Board board)
