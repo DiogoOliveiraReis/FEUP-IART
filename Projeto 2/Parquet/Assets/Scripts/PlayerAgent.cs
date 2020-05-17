@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
+using System.Security.AccessControl;
+using System.Security.Cryptography;
 
 public class PlayerAgent : Agent
 {
@@ -13,58 +15,78 @@ public class PlayerAgent : Agent
     }
 
     public Transform Target;
+    public Transform VoidPiece1;
+    public Transform VoidPiece2;
+    public Transform VoidPiece3;
     public override void OnEpisodeBegin()
     {
         // If the Agent fell, zero its momentum
+        /*
         this.rBody.angularVelocity = Vector3.zero;
         this.rBody.velocity = Vector3.zero;
+        */
         this.transform.localPosition = new Vector3(-350, -350, 0);
 
         // Move the target to a new spot
-        Target.localPosition = new Vector3(350,
-                                           350,
-                                           0);
+        Target.localPosition = new Vector3(350, 350, 0);
+        VoidPiece1.localPosition = new Vector3(-50, 50, 0);
+        VoidPiece2.localPosition = new Vector3(50, -50, 0);
+        VoidPiece3.localPosition = new Vector3(50, 50, 0);
     }
     public override void CollectObservations(VectorSensor sensor)
     {
-        // Target and Agent positions
         sensor.AddObservation(Target.localPosition);
+        sensor.AddObservation(VoidPiece1.localPosition);
+        sensor.AddObservation(VoidPiece2.localPosition);
+        sensor.AddObservation(VoidPiece3.localPosition);
         sensor.AddObservation(this.transform.localPosition);
-
-        // Agent velocity
-        sensor.AddObservation(rBody.velocity.x);
-        sensor.AddObservation(rBody.velocity.y);
     }
-    public float speed = 10;
+
     public override void OnActionReceived(float[] vectorAction)
     {
-        // Actions, size = 2
         Vector3 controlSignal = Vector3.zero;
-        controlSignal.x = vectorAction[0];
-        controlSignal.y = vectorAction[1];
-        rBody.AddForce(controlSignal * speed);
+        controlSignal.x = (vectorAction[0] * (float)29.55);
+        controlSignal.y = (vectorAction[1] * (float)29.55);
+        rBody.transform.Translate(controlSignal);
 
-        // Rewards
+        // Reached Target
         float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition);
-
-
-        // Reached target
+        AddReward(-distanceToTarget);
         if (distanceToTarget < 50)
         {
-            SetReward(1.0f);
+            SetReward(1);
             EndEpisode();
         }
 
-        // Fell off platform
+        // Hit Void Piece
+        float distanceToVoidPiece1 = Vector3.Distance(this.transform.localPosition, VoidPiece1.localPosition);
+        if (distanceToVoidPiece1 < 50)
+        {
+            EndEpisode();
+        }
+        float distanceToVoidPiece2 = Vector3.Distance(this.transform.localPosition, VoidPiece2.localPosition);
+        if (distanceToVoidPiece2 < 50)
+        {
+            EndEpisode();
+        }
+        /*
+        float distanceToVoidPiece3 = Vector3.Distance(this.transform.localPosition, VoidPiece3.localPosition);
+        if (distanceToVoidPiece3 < 50)
+        {
+            EndEpisode();
+        }
+        */
+
+        // Hit Board Limit
         if (this.transform.localPosition.x > 360 || this.transform.localPosition.x < -360 || this.transform.localPosition.y > 360 || this.transform.localPosition.y < -360)
         {
             EndEpisode();
         }
     }
 
-        public override void Heuristic(float[] actionsOut)
+    public override void Heuristic(float[] actionsOut)
     {
-        actionsOut[0] = Input.GetAxis("Horizontal");
-        actionsOut[1] = Input.GetAxis("Vertical");
+        actionsOut[0] = Input.GetAxisRaw("Horizontal");
+        actionsOut[1] = Input.GetAxisRaw("Vertical");
     }
 }
