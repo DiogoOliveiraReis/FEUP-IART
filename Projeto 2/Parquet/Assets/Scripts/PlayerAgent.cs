@@ -25,7 +25,6 @@ public class PlayerAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        SetReward(0);
         // If the Agent fell, zero its momentum
         /*
         this.rBody.angularVelocity = Vector3.zero;
@@ -51,15 +50,17 @@ public class PlayerAgent : Agent
     public override void OnActionReceived(float[] vectorAction)
     {
         Vector3 controlSignal = Vector3.zero;
-        controlSignal.x = (vectorAction[0] * (float)31.80);
-        controlSignal.y = (vectorAction[1] * (float)31.80);
+        controlSignal.x = (vectorAction[0] * (float)43);
+        controlSignal.y = (vectorAction[1] * (float)43);
         rBody.transform.Translate(controlSignal);
 
-        // Reached Target
         float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition);
+        SetReward(InitialDistanceToTarget - distanceToTarget);
+
+        // Reached Target
         if (distanceToTarget < 50)
         {
-            SetReward(InitialDistanceToTarget - distanceToTarget);
+            AddReward(1);
             EndEpisode();
         }
 
@@ -67,29 +68,37 @@ public class PlayerAgent : Agent
         float distanceToVoidPiece1 = Vector3.Distance(this.transform.localPosition, VoidPiece1.localPosition);
         if (distanceToVoidPiece1 < 50)
         {
+            AddReward(-1);
             EndEpisode();
         }
         float distanceToVoidPiece2 = Vector3.Distance(this.transform.localPosition, VoidPiece2.localPosition);
         if (distanceToVoidPiece2 < 50)
         {
+            AddReward(-1);
             EndEpisode();
         }
         float distanceToVoidPiece3 = Vector3.Distance(this.transform.localPosition, VoidPiece3.localPosition);
         if (distanceToVoidPiece3 < 50)
         {
+            AddReward(-1);
             EndEpisode();
         }
 
         // Hit Board Limit
         if (this.transform.localPosition.x > 355 || this.transform.localPosition.x < -355 || this.transform.localPosition.y > 355 || this.transform.localPosition.y < -355)
         {
+            AddReward(-1);
             EndEpisode();
         }
     }
 
     public override void Heuristic(float[] actionsOut)
     {
+        /*
         actionsOut[0] = Math.Abs(Input.GetAxisRaw("Horizontal"));
         actionsOut[1] = Math.Abs(Input.GetAxisRaw("Vertical"));
+        */
+        actionsOut[0] = Input.GetAxisRaw("Horizontal");
+        actionsOut[1] = Input.GetAxisRaw("Vertical");
     }
 }
