@@ -19,24 +19,21 @@ public class PlayerAgent : Agent
     public Transform VoidPiece1;
     public Transform VoidPiece2;
     public Transform VoidPiece3;
+    public Transform VoidPiece4;
+    public Transform OpponentAgent;
     private static Vector3 InitialPosition = new Vector3(-250, -250, 0);
     private static Vector3 InitialTargetPosition = new Vector3(350, 350, 0);
     private static float InitialDistanceToTarget = Vector3.Distance(InitialTargetPosition, InitialPosition);
 
     public override void OnEpisodeBegin()
     {
-        // If the Agent fell, zero its momentum
-        /*
-        this.rBody.angularVelocity = Vector3.zero;
-        this.rBody.velocity = Vector3.zero;
-        */
+        // Reset Pieces Position
         this.transform.localPosition = new Vector3(-250, -250, 0);
-
-        // Move the target to a new spot
         Target.localPosition = new Vector3(350, 350, 0);
         VoidPiece1.localPosition = new Vector3(-50, 50, 0);
         VoidPiece2.localPosition = new Vector3(50, -50, 0);
         VoidPiece3.localPosition = new Vector3(50, 50, 0);
+        VoidPiece4.localPosition = new Vector3(-50, -50, 0);
     }
     public override void CollectObservations(VectorSensor sensor)
     {
@@ -44,6 +41,7 @@ public class PlayerAgent : Agent
         sensor.AddObservation(VoidPiece1.localPosition);
         sensor.AddObservation(VoidPiece2.localPosition);
         sensor.AddObservation(VoidPiece3.localPosition);
+        sensor.AddObservation(VoidPiece4.localPosition);
         sensor.AddObservation(this.transform.localPosition);
     }
 
@@ -54,8 +52,9 @@ public class PlayerAgent : Agent
         controlSignal.y = (vectorAction[1] * (float)43);
         rBody.transform.Translate(controlSignal);
 
+        // Reward Based On Distance To Target
         float distanceToTarget = Vector3.Distance(this.transform.localPosition, Target.localPosition);
-        SetReward(InitialDistanceToTarget - distanceToTarget);
+        AddReward(InitialDistanceToTarget - distanceToTarget);
 
         // Reached Target
         if (distanceToTarget < 50)
@@ -79,6 +78,20 @@ public class PlayerAgent : Agent
         }
         float distanceToVoidPiece3 = Vector3.Distance(this.transform.localPosition, VoidPiece3.localPosition);
         if (distanceToVoidPiece3 < 50)
+        {
+            AddReward(-1);
+            EndEpisode();
+        }
+        float distanceToVoidPiece4 = Vector3.Distance(this.transform.localPosition, VoidPiece4.localPosition);
+        if (distanceToVoidPiece4 < 50)
+        {
+            AddReward(-1);
+            EndEpisode();
+        }
+
+        // Agent Collision
+        float distanceToOpponentAgent = Vector3.Distance(this.transform.localPosition, OpponentAgent.localPosition);
+        if (distanceToOpponentAgent < 50)
         {
             AddReward(-1);
             EndEpisode();
