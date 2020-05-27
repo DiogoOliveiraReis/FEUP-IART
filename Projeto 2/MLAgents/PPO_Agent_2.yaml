@@ -8,7 +8,7 @@ AgentBehavior:
     lambd: 0.95
     learning_rate: 0.0004
     learning_rate_schedule: linear
-    max_steps: 20000
+    max_steps: 40000
     memory_size: 128
     normalize: false
     num_epoch: 3
